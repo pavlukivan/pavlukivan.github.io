@@ -1,0 +1,156 @@
+<html>
+<head>
+<style>
+
+html {
+	background: #fafafa;
+}
+
+.text-output {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px 0;
+}
+
+.text-output2 {
+	color: #5e5e5e;
+	font: bold 10px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 10px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.text-input {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px 0;
+}
+</style>
+<script>
+var mappingUrl = "MICSFT/PC/CP437.TXT";
+function gup(name, url) {
+    if (!url) url = location.href;
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var results = regex.exec( url );
+    return results == null ? null : results[1];
+}
+var cp="1252";
+var g=gup("cp", "");
+if(g && parseInt(g)) cp=g;
+
+var fallbackUrls = ["MICSFT/WINDOWS/CP"+cp+".TXT"];
+</script>
+</head>
+
+<body>
+<div id="output" class="text-output">This is a tool to convert unicode symbols into alt codes. Loading...</div>
+<form id="user-form"><input type="text" id="user-input" class="text-input" maxlength="1"/></form>
+</body>
+
+<script>
+var userInput=document.getElementById("user-input");
+var userForm=document.getElementById("user-form");
+var output=document.getElementById("output");
+
+var nameByAltCode1 = {0x01: "WHITE SMILING FACE", 0x02: "BLACK SMILING FACE", 0x03: "BLACK HEART SUIT", 0x04: "BLACK DIAMOND SUIT", 0x05: "BLACK CLUB SUIT", 0x06: "BLACK SPADE SUIT", 0x07: "BULLET", 0x08: "INVERSE BULLET", 0x09: "WHITE CIRCLE", 0x0A: "INVERSE WHITE CIRCLE", 0x0B: "MALE SIGN", 0x0C: "FEMALE SIGN", 0x0D: "EIGHTH NOTE", 0x0E: "BEAMED EIGHTH NOTES", 0x0F: "WHITE SUN WITH RAYS", 0x10: "BLACK RIGHT-POINTING POINTER", 0x11: "BLACK LEFT-POINTING POINTER", 0x12: "UP DOWN ARROW", 0x13: "DOUBLE EXCLAMATION MARK", 0x14: "PILCROW SIGN", 0x15: "SECTION SIGN", 0x16: "BLACK RECTANGLE", 0x17: "UP DOWN ARROW WITH BASE", 0x18: "UPWARDS ARROW", 0x19: "DOWNWARDS ARROW", 0x1A: "RIGHTWARDS ARROW", 0x1B: "LEFTWARDS ARROW", 0x1C: "RIGHT ANGLE", 0x1D: "LEFT RIGHT ARROW", 0x1E: "BLACK UP-POINTING TRIANGLE", 0x1F: "BLACK DOWN-POINTING TRIANGLE"};
+var nameByAltCode = {};
+var altCodeByUniCode1 = {0x263a: 0x01, 0x263b: 0x02, 0x2665: 0x03, 0x2666: 0x04, 0x2663: 0x05, 0x2660: 0x06, 0x2022: 0x07, 0x25D8: 0x08, 0x25CB: 0x09, 0x25D9: 0x0A, 0x2642: 0x0B, 0x2640: 0x0C, 0x266A: 0x0D, 0x266B: 0x0E, 0x263C: 0x0F, 0x25BA: 0x10, 0x25C4: 0x11, 0x2195: 0x12, 0x203C: 0x13, 0xb6: 0x14, 0xa7: 0x15, 0x25AC: 0x16, 0x21A8: 0x17, 0x2191: 0x18, 0x2193: 0x19, 0x2192: 0x1A, 0x2190: 0x1B, 0x221F: 0x1C, 0x2194: 0x1D, 0x25B2: 0x1E, 0x25BC: 0x1F};
+var altCodeByUniCode = {};
+
+function parseData(t) {
+	var mappingDataArr = t.split("\r\n");
+	for(var i = 0; i < mappingDataArr.length; i += 1) {
+		var row = mappingDataArr[i].split('\t');
+		if(row.length != 3 || mappingDataArr[i].startsWith("#"))
+			continue;
+		var altCode = parseInt(row[0]);
+		if(row[1].startsWith(" ")) {
+			continue;
+		}
+		var uniCode = parseInt(row[1]);
+		var chrName = row[2].substr(1);
+		
+		if(fallbackIdx < 0) {
+			if(!nameByAltCode1[altCode])
+				nameByAltCode1[altCode] = chrName;
+			if(!altCodeByUniCode1[uniCode])
+				altCodeByUniCode1[uniCode] = altCode;
+		} else {
+			if(!nameByAltCode[altCode])
+				nameByAltCode[altCode] = chrName;
+			if(!altCodeByUniCode[uniCode])
+				altCodeByUniCode[uniCode] = altCode;
+		}
+	}
+}
+
+var fallbackIdx = -1;
+function onReadyStateChange(s) {
+	if(s.target.readyState == 4) {
+		parseData(s.target.responseText);
+		fallbackIdx += 1;
+		if(fallbackIdx == fallbackUrls.length) {
+			userInput.focus();		
+			output.textContent = "Loaded. Type any char in the box to get its alt code!";
+			userForm.addEventListener('submit', function handleSubmit(e) {
+				e.preventDefault();
+				if(userInput.value.length == 1) {
+					if(altCodeByUniCode1[userInput.value.codePointAt(0)] && nameByAltCode1[altCodeByUniCode1[userInput.value.codePointAt(0)]]) {
+						output.textContent = "Character name: "+nameByAltCode1[altCodeByUniCode1[userInput.value.codePointAt(0)]]+". Alt code: ALT+"+altCodeByUniCode1[userInput.value.codePointAt(0)].toString();
+					} else if(altCodeByUniCode[userInput.value.codePointAt(0)] && nameByAltCode[altCodeByUniCode[userInput.value.codePointAt(0)]]) {
+						output.textContent = "Character name: "+nameByAltCode[altCodeByUniCode[userInput.value.codePointAt(0)]]+". Alt code: ALT+0"+altCodeByUniCode[userInput.value.codePointAt(0)].toString();
+					} else if(nameByAltCode[userInput.value.codePointAt(0)]) {
+						output.textContent = "Character name: "+nameByAltCode[userInput.value.codePointAt(0)]+". Alt code: ALT+0"+userInput.value.codePointAt(0).toString();
+					} else {
+						output.textContent = "This character probably doesn't have an alt code.";
+					}
+				}
+				return false;
+			});
+		} else {
+			var x = new XMLHttpRequest();
+			x.onreadystatechange = onReadyStateChange;
+			console.log(fallbackUrls[fallbackIdx]);
+			x.open("GET", document.URL.replace(/[a-zA-Z0-9-]*\.html/, "mappings/"+fallbackUrls[fallbackIdx]));
+			x.send();
+		}
+	}
+}
+var x = new XMLHttpRequest;
+
+x.onreadystatechange = onReadyStateChange;
+
+x.open("GET", document.URL.replace(/[a-zA-Z0-9-]*\.html/, "mappings/"+mappingUrl));
+x.send();
+</script>
+
+</html>

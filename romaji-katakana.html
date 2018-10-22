@@ -1,0 +1,220 @@
+<html>
+<head>
+<style>
+
+html {
+	background: #fafafa;
+}
+
+.text-output {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px 0;
+}
+
+.text-output2 {
+	color: #5e5e5e;
+	font: bold 10px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 10px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.text-input {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px 0;
+}
+</style>
+<script>
+var hiragana = {
+	standart: ['あ','い','う','え','お','か','き','く','け','こ','さ','し','す','せ','そ','た','ち','つ','て','と','な','に','ぬ','ね','の','は','ひ','ふ','へ','ほ','ま','み','む','め','も','ら','り','る','れ','ろ','や','ゆ','よ','わ','を','ん'],
+	extended: ['が','ぎ','ぐ','げ','ご','ざ','じ','ず','ぜ','ぞ','だ','ぢ','づ','で','ど','ば','び','ぶ','べ','ぼ','ぱ','ぴ','ぷ','ぺ','ぽ'],
+	variants: ['ぁ','ぃ','ぅ','ぇ','ぉ','ゃ','ゅ','ょ'],
+	wtf: ['ゐ','ゑ']
+};
+
+var katakana = {
+	standart: ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ラ','リ','ル','レ','ロ','ヤ','ユ','ヨ','ワ','ヲ','ン'],
+	extended: ['ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'],
+	variants: ['ァ','ィ','ゥ','ェ','ォ','ャ','ュ','ョ'],
+	wtf: ['ヰ','ヱ']
+};
+
+var romajiAlt = {
+	standart: ['a','i','u','e','o','ka','ki','ku','ke','ko','sa','si','su','se','so','ta','ti','tu','te','to','na','ni','nu','ne','no','ha','hi','hu','he','ho','ma','mi','mu','me','mo','ra','ri','ru','re','ro','ya','yu','yo','wa','wo','n'],
+	extended: ['ga','gi','gu','ge','go','za','zi','zu','ze','zo','da','di','du','de','do','ba','bi','bu','be','bo','pa','pi','pu','pe','po'],
+	variants: ['a (small)','i (small)','u (small)','e (small)','o (small)','ya (small)','yu (small)','yo (small)'],
+	wtf: ['wi','we']
+};
+
+var romaji = {
+	standart: ['a','i','u','e','o','ka','ki','ku','ke','ko','sa','shi','su','se','so','ta','chi','tsu','te','to','na','ni','nu','ne','no','ha','hi','fu','he','ho','ma','mi','mu','me','mo','ra','ri','ru','re','ro','ya','yu','yo','wa','wo','n'],
+	extended: ['ga','gi','gu','ge','go','za','ji','zu','ze','zo','da','ji','zu','de','do','ba','bi','bu','be','bo','pa','pi','pu','pe','po'],
+	variants: ['a (small)','i (small)','u (small)','e (small)','o (small)','ya (small)','yu (small)','yo (small)'],
+	wtf: ['wi','we']
+};
+
+var symbolsEn = ['!','"','#','$','%','&','\'','(',')','-','=','^','~','\\','|','@','`','[','{',':','*',']','}',',','<','>','/','?','_'];
+var symbolsJp = ['゛','゜','「','」','。','、','・','ー'];
+
+var msPerQuestion = 5000;
+var questionCount = 100;
+</script>
+</head>
+
+<body>
+<div id="game-desc" class="text-output2">You will get asked 100 questions and then given your result in points (0-100). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points substracted.</div>
+<div id="output" class="text-output">this is a tool to help transitioning from english to japanese keyboard</div>
+<form id="user-form"><input type="text" id="user-input" class="text-input" disabled="true"/></form>
+<div id="output2" class="text-output"></div>
+
+</body>
+
+<script>
+var userInput=document.getElementById("user-input");
+var userForm=document.getElementById("user-form");
+var output=document.getElementById("output");
+var output2=document.getElementById("output2");
+var desc=document.getElementById("game-desc");
+desc.textContent = "You will get asked " + questionCount.toString() + " questions and then given your result in points (0-" + questionCount.toString() + "). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points substracted.";
+
+userInput.focus();
+
+output.textContent = "loaded";
+
+var question="";
+var answer="";
+
+var questions = katakana.standart;
+
+var answersByKey = {};
+
+var score = 0;
+var questionNum = 0;
+
+var questionTime = 0;
+
+function rotateQuestion() {
+	var idx = Math.floor(Math.random()*questions.length);
+	question = questions[idx];
+	answer = idx;
+	questionNum += 1;
+	questionTime = Date.now();
+	
+	output.textContent = question;
+	userInput.value = "";
+	userInput.focus();
+	
+	answersByKey[question] = romaji.standart[answer];
+}
+
+function timeoutGame(secLeft) {
+	if(secLeft > 0) {
+		output.textContent = "Start in "+secLeft.toString()+"s";
+		setTimeout(function(){timeoutGame(secLeft-1)}, 1000);
+	} else {
+		output.textContent = "Starting...";
+		userInput.disabled = false;
+		rotateQuestion();
+	}
+}
+
+var lastFlashID = -1;
+var freeFlashID = 0;
+
+function flashUserInput(color) {
+	if(color != "") {
+		var flashID = freeFlashID++;
+		lastFlashID = flashID;
+		userInput.style.background = color;
+		setTimeout(function(){if(flashID == lastFlashID) flashUserInput("")}, 100);
+	} else {
+		userInput.style.background = "";
+	}
+}
+
+var errors = {};
+
+timeoutGame(5);
+
+function handleSubmit(e) {
+	e.preventDefault();
+	if(userInput.value == romaji.standart[answer] || userInput.value == romajiAlt.standart[answer]) {
+		if(Date.now() - questionTime <= msPerQuestion) {
+			score += 1.0;
+		} else {
+			score += 0.5;
+		}
+	} else {
+		output2.textContent = "no, "+question+" is "+romaji.standart[answer];
+		flashUserInput("red");
+		score -= 0.5;
+		errors[question] = (errors[question] | 0) + 1;
+	}
+	
+	if(questionNum == questionCount) {
+		userInput.value = "";
+		userInput.disabled = true;
+		output.textContent = "Your result: "+score.toString()+"/"+questionCount.toString();
+		
+		var errorArr = [];
+		var errorArr = Object.keys(errors).map(function(key) {
+			return [key, errors[key]];
+		});
+		
+		errorArr.sort(function(first, second) {
+			return second[1] - first[1];
+		});
+		
+		if(errorArr.length > 0) {
+			output2.textContent = "It seems like you had the most trouble with the following characters:";
+			errorArr.forEach(function(item) {
+				output2.innerHTML += "<br/>";
+				output2.innerHTML += item[0];
+				output2.innerHTML += " (";
+				output2.innerHTML += item[1];
+				output2.innerHTML += "x error. The correct answer is ";
+				output2.innerHTML += answersByKey[item[0]];
+				output2.innerHTML += ")";
+			});
+		} else {
+			output2.textContent = "Congratulations! You made no errors.";
+		}
+	} else {
+		rotateQuestion();
+	}
+	return false;
+}
+
+userForm.addEventListener('submit', handleSubmit);
+</script>
+
+</html>

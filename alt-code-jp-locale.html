@@ -1,0 +1,148 @@
+<html>
+<head>
+<style>
+
+html {
+	background: #fafafa;
+}
+
+.text-output {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px 0;
+}
+
+.text-output2 {
+	color: #5e5e5e;
+	font: bold 10px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 10px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.text-input {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px 0;
+}
+</style>
+<script>
+var mappingUrl = "MICSFT/WINDOWS/CP932.TXT";
+var fallbackUrl = "MICSFT/WINDOWS/CP1252.TXT";
+</script>
+</head>
+
+<body>
+<div id="output" class="text-output">This is a tool to convert unicode symbols into alt codes. Loading...</div>
+<form id="user-form"><input type="text" id="user-input" class="text-input" maxlength="1"/></form>
+</body>
+
+<script>
+var userInput=document.getElementById("user-input");
+var userForm=document.getElementById("user-form");
+var output=document.getElementById("output");
+
+var x = new XMLHttpRequest();
+
+var nameByAltCode = {};
+var altCodeByUniCode = {};
+
+x.onreadystatechange = function(s) {
+	var mappingDataArr = x.responseText.split("\r\n");
+	for(var i = 0; i < mappingDataArr.length; i += 1) {
+		var row = mappingDataArr[i].split('\t');
+		if(row.length != 3 || mappingDataArr[i].startsWith("#"))
+			continue;
+		var altCode = parseInt(row[0]);
+		if(row[1].startsWith(" ")) {
+			continue;
+		}
+		var uniCode = parseInt(row[1]);
+		var chrName = row[2].substr(1);
+		
+		nameByAltCode[altCode] = chrName;
+		
+		altCodeByUniCode[uniCode] = altCode;
+	}
+	
+	var y = new XMLHttpRequest();
+	y.onreadystatechange = function(t) {
+		var mappingDataArr = y.responseText.split("\r\n");
+		for(var i = 0; i < mappingDataArr.length; i += 1) {
+			var row = mappingDataArr[i].split('\t');
+			if(row.length != 3 || mappingDataArr[i].startsWith("#"))
+				continue;
+			var altCode = parseInt(row[0]);
+			var uniCodeExists = false;
+			for(var j = 0; j < row[1].length; ++j) {
+				if(row[1] != " ") {
+					uniCodeExists = true;
+					break;
+				}
+			}
+			if(!uniCodeExists) {
+				continue;
+			}
+			var uniCode = parseInt(row[1]);
+			var chrName = row[2].substr(1);
+			
+			if(!nameByAltCode[altCode])
+				nameByAltCode[altCode] = chrName;
+			if(!altCodeByUniCode[uniCode])
+				altCodeByUniCode[uniCode] = altCode;
+		}
+		
+		userInput.focus();
+		
+		output.textContent = "Loaded. Type any char in the box to get its alt code!";
+
+		userForm.addEventListener('submit', function handleSubmit(e) {
+			e.preventDefault();
+			if(userInput.value.length == 1) {
+				if(altCodeByUniCode[userInput.value.codePointAt(0)] && nameByAltCode[altCodeByUniCode[userInput.value.codePointAt(0)]]) {
+					output.textContent = "Character name: "+nameByAltCode[altCodeByUniCode[userInput.value.codePointAt(0)]]+". Alt code: ALT+"+altCodeByUniCode[userInput.value.codePointAt(0)].toString();
+				} else if(nameByAltCode[userInput.value.codePointAt(0)]) {
+					output.textContent = "Character name: "+nameByAltCode[userInput.value.codePointAt(0)]+". Alt code: ALT+"+userInput.value.codePointAt(0).toString();
+				} else {
+					output.textContent = "This character doesn't have an alt code.";
+				}
+			}
+			return false;
+		});
+	}
+	y.open("GET", document.URL.replace(/[a-zA-Z0-9-]*\.html/, "mappings/"+fallbackUrl));
+	y.send();
+}
+
+x.open("GET", document.URL.replace(/[a-zA-Z0-9-]*\.html/, "mappings/"+mappingUrl));
+x.send();
+</script>
+
+</html>

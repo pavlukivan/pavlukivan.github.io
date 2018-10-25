@@ -1,0 +1,310 @@
+<html>
+<head>
+<style>
+
+html {
+	background: #fafafa;
+}
+
+.text-output {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	padding: 15px 0;
+}
+
+.text-output2 {
+	color: #5e5e5e;
+	font: bold 10px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 10px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.text-input {
+	color: #5e5e5e;
+	font: bold 20px arial;
+	text-decoration: none;
+	text-align: center;
+	margin: 20px auto;
+	text-shadow: 0px 1px 0px #f5f5f5;
+	min-width: 24px;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px 0;
+}
+table {
+  border-collapse: collapse;
+}
+tr { 
+  border: solid;
+  border-width: 1px 0;
+}
+
+
+</style>
+<script src="js/markdown.js"></script>
+<script>
+var hiragana = {
+	standart: ['あ','い','う','え','お','か','き','く','け','こ','さ','し','す','せ','そ','た','ち','つ','て','と','な','に','ぬ','ね','の','は','ひ','ふ','へ','ほ','ま','み','む','め','も','ら','り','る','れ','ろ','や','ゆ','よ','わ','を','ん'],
+	extended: ['が','ぎ','ぐ','げ','ご','ざ','じ','ず','ぜ','ぞ','だ','ぢ','づ','で','ど','ば','び','ぶ','べ','ぼ','ぱ','ぴ','ぷ','ぺ','ぽ'],
+	variants: ['ぁ','ぃ','ぅ','ぇ','ぉ','ゃ','ゅ','ょ'],
+	wtf: ['ゐ','ゑ']
+};
+
+var katakana = {
+	standart: ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ','サ','シ','ス','セ','ソ','タ','チ','ツ','テ','ト','ナ','ニ','ヌ','ネ','ノ','ハ','ヒ','フ','ヘ','ホ','マ','ミ','ム','メ','モ','ラ','リ','ル','レ','ロ','ヤ','ユ','ヨ','ワ','ヲ','ン'],
+	extended: ['ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'],
+	variants: ['ァ','ィ','ゥ','ェ','ォ','ャ','ュ','ョ'],
+	wtf: ['ヰ','ヱ']
+};
+
+var romajiAlt = {
+	standart: ['a','i','u','e','o','ka','ki','ku','ke','ko','sa','si','su','se','so','ta','ti','tu','te','to','na','ni','nu','ne','no','ha','hi','hu','he','ho','ma','mi','mu','me','mo','ra','ri','ru','re','ro','ya','yu','yo','wa','wo','n'],
+	extended: ['ga','gi','gu','ge','go','za','zi','zu','ze','zo','da','di','du','de','do','ba','bi','bu','be','bo','pa','pi','pu','pe','po'],
+	variants: ['a (small)','i (small)','u (small)','e (small)','o (small)','ya (small)','yu (small)','yo (small)'],
+	wtf: ['wi','we']
+};
+
+var romaji = {
+	standart: ['a','i','u','e','o','ka','ki','ku','ke','ko','sa','shi','su','se','so','ta','chi','tsu','te','to','na','ni','nu','ne','no','ha','hi','fu','he','ho','ma','mi','mu','me','mo','ra','ri','ru','re','ro','ya','yu','yo','wa','wo','n'],
+	extended: ['ga','gi','gu','ge','go','za','zi','zu','ze','zo','da','ji','zu','de','do','ba','bi','bu','be','bo','pa','pi','pu','pe','po'],
+	variants: ['a (small)','i (small)','u (small)','e (small)','o (small)','ya (small)','yu (small)','yo (small)'],
+	wtf: ['wi','we']
+};
+
+var symbolsEn = ['!','"','#','$','%','&','\'','(',')','-','=','^','~','\\','|','@','`','[','{',':','*',']','}',',','<','>','/','?','_'];
+var symbolsJp = ['゛','゜','「','」','。','、','・','ー'];
+
+function textToHiragana(text) {
+	text = text.toLowerCase();
+	var ret = "";
+	var pos=0;
+	for(var pos = 0; pos < text.length;) {
+		var oldPos = pos;
+		for(var i = 0; i < romaji.standart.length; ++i) {
+			if(text.substr(pos, Math.min(text.length, pos+romaji.standart[i].length)) == romaji.standart[i]) {
+				pos += romaji.standart[i].length;
+				ret += hiragana.standart[i];
+				break;
+			} else if(text.substr(pos, Math.min(text.length, pos+romajiAlt.standart[i].length)) == romajiAlt.standart[i]) {
+				pos += romajiAlt.standart[i].length;
+				ret += hiragana.standart[i];
+				break;
+			} else if(text.substr(pos, Math.min(text.length, pos+katakana.standart[i].length)) == katakana.standart[i]) {
+				pos += katakana.standart[i].length;
+				ret += hiragana.standart[i];
+				break;
+			} else if(text.substr(pos, Math.min(text.length, pos+hiragana.standart[i].length)) == hiragana.standart[i]) {
+				pos += hiragana.standart[i].length;
+				ret += hiragana.standart[i];
+				break;
+			} else if(i < romaji.extended.length) {
+				if(text.substr(pos, Math.min(text.length, pos+romaji.extended[i].length)) == romaji.extended[i]) {
+					pos += romaji.extended[i].length;
+					ret += hiragana.extended[i];
+					break;
+				} else if(text.substr(pos, Math.min(text.length, pos+romajiAlt.extended[i].length)) == romajiAlt.extended[i]) {
+					pos += romajiAlt.extended[i].length;
+					ret += hiragana.extended[i];
+					break;
+				} else if(text.substr(pos, Math.min(text.length, pos+katakana.extended[i].length)) == katakana.extended[i]) {
+					pos += katakana.extended[i].length;
+					ret += hiragana.extended[i];
+					break;
+				} else if(text.substr(pos, Math.min(text.length, pos+hiragana.extended[i].length)) == hiragana.extended[i]) {
+					pos += hiragana.extended[i].length;
+					ret += hiragana.extended[i];
+					break;
+				} else if(i < romaji.variants.length) {
+					if(text.substr(pos, Math.min(text.length, pos+romaji.variants[i].length)) == romaji.variants[i]) {
+						pos += romaji.variants[i].length;
+						ret += hiragana.variants[i];
+						break;
+					} else if(text.substr(pos, Math.min(text.length, pos+romajiAlt.variants[i].length)) == romajiAlt.variants[i]) {
+						pos += romajiAlt.variants[i].length;
+						ret += hiragana.variants[i];
+						break;
+					} else if(text.substr(pos, Math.min(text.length, pos+katakana.variants[i].length)) == katakana.variants[i]) {
+						pos += katakana.variants[i].length;
+						ret += hiragana.variants[i];
+						break;
+					} else if(text.substr(pos, Math.min(text.length, pos+hiragana.variants[i].length)) == hiragana.variants[i]) {
+						pos += hiragana.variants[i].length;
+						ret += hiragana.variants[i];
+						break;
+					} else if(i < romaji.wtf.length) {
+						if(text.substr(pos, Math.min(text.length, pos+romaji.wtf[i].length)) == romaji.wtf[i]) {
+							pos += romaji.wtf[i].length;
+							ret += hiragana.wtf[i];
+							break;
+						} else if(text.substr(pos, Math.min(text.length, pos+romajiAlt.wtf[i].length)) == romajiAlt.wtf[i]) {
+							pos += romajiAlt.wtf[i].length;
+							ret += hiragana.wtf[i];
+							break;
+						} else if(text.substr(pos, Math.min(text.length, pos+katakana.wtf[i].length)) == katakana.wtf[i]) {
+							pos += katakana.wtf[i].length;
+							ret += hiragana.wtf[i];
+							break;
+						} else if(text.substr(pos, Math.min(text.length, pos+hiragana.wtf[i].length)) == hiragana.wtf[i]) {
+							pos += hiragana.wtf[i].length;
+							ret += hiragana.wtf[i];
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(oldPos == pos) {
+			ret += text[pos];
+			++pos;
+		}
+	}
+	return ret;
+}
+
+function mcf2html(f) { //multiline comment function (markdown) to html
+	var s = f.toString();
+	s = s.substr(14, s.length-18);
+	s = s.replace(/\n/g, '  \n'); //markdown wants double newlines but i dont
+	if(s.startsWith("列")) {
+		console.log(s.indexOf("\n"));
+		console.log(s);
+	}
+	return markdown.toHTML(s);
+}
+
+var kanjis = [
+[['新', 'しん', 'あなら', 'あら', 'にい', 'にひ'], mcf2html(function(){/*
+#新
+Meaning - new
+Usually read as **しん** (example: 新幹線 - しんかんせん - bullet train)
+Other readings are: あなら, あら, にい
+
+All the words with non-しん readings (names not included):
+新しい - あたら(しい) - new (Basically the only word with あなら reading)
+新た - あら(た) - new
+新手 - あら(て) - beginner/newcomer/a new method to do something
+新妻 - にい(ずま) - a new wife
+
+Radicals: 立+木, 斤
+ENEMY SUTENDO (cuz omae wa mou SHINdeiru)+tree|**r**e**T**weet (cuz who doesnt rt jojo memes)
+*/})],
+
+
+[['開', 'かい', 'け', 'ひら', 'あ', 'さく', 'はる', 'はるき', 'ひら', 'ひらかす', 'ひらき', 'ひらく'], mcf2html(function(){/*
+#開
+Meaning - open
+Usually read as **かい** (example: 開始 - かいし - start)
+Other readings are: ひら, あ, used when 開 is followed by a hiragana (and isn't at the word end)
+Examples:
+開く - あく/ひらく - to open/begin, 開ける - あける/ひらける - to open/make (a hole)
+The words can have slightly different meaning with あ compared to ひら or their "counterparts" might not exist at all so they aren't exactly interchangeable
+
+Consists of: 門+开
+門 - door/gate
+开 - literally another form of 開, consists of 廾 (hands)+一. 
+Remember it as 廾hands 一holding that 門door to 開open it or something
+*/})],
+
+[['始', 'し', 'はじ', 'とも', 'はる', 'もと'], mcf2html(function(){/*
+#始
+Meaning - beginning
+Usually read as **し** (example: 開始 - かいし - start)
+The other reading is はじ, it's used when 始 is postfixed by め or ま
+The only exception is 見始 - an alternative spelling for 見始め
+Examples for はじ spelling:
+始める/始まる - はじめる/はじまる - to begin, 始め - はじめ - beginning
+Radicals: 女, ム+ロ
+woman that gives **beginning** to life|muro (just remember it xd)
+*/})],
+
+[['文', 'もん', 'ぶん', 'ふみ', 'あや', 'かざり', 'ふ', 'も'], mcf2html(function(){/*
+#文
+Meaning - character/letter/sentence/saying/spell/etc
+Most used reading - **bun** (example: 文学 - bungaku - literature)
+Other readings - ふみ, もん and rarely used あや and ふ
+ぶみ reading means "letter" (example: 仮名文　- かなぶみ - a letter written using kana)
+Examples for もん reading:
+天文 - (てん)もん - astronomy (+derived words)
+文字 - も(じ) - character/letter (+derived words like 文字列 - もじ(れつ) - character string)
+文句 - もん(く) - complaint
+文言 - もん(ごん) - wording/phrasing
+
+Looks like a table that has a pen on top of it
+*/})],
+
+[['字', 'じ', 'し', 'あざ', 'あざな', 'うむ', 'ます'], mcf2html(function(){/*
+#字
+Meaning - character/letter/handwriting/village section/nickname
+Usually read as じ
+Also used as character counter (10字 means 10 characters)
+Rare readings - あざ and あざな.
+Examples of other readings:
+大字 - (おお)あざ - big character/letter/village section
+小字 - (こ)あざ - childhood nickname
+Radicals: 子 (meaning - small object/a child)+宀 (top of a table with a pen on top of it)
+*/})],
+
+[['列', 'れち', 'れつ', 'れっ', 'なら', 'ならべ', 'つら'], mcf2html(function(){/*
+#列
+Meaning - line/row/matrix column
+Usually read as れつ (word end) or れっ (when at word beginning/middle).
+Radicals:
+歹|刂 = 一+タ|丨+亅
+Literally a horizontal line+ta, and then 2 vertical lines. Theres so many lines, dont u dare forgetting what it means.
+*/})]
+];
+</script>
+</head>
+<body>
+<div class="text-output2">This is a kanji dictionary made by me for me. It might have some errors, some obscure references or whatever. I don't even guarantee its correctness, but if you noticed any errors - please contact me.</div>
+<form id="user-form"><input type="text" id="user-input" class="text-input" placeholder="Enter kanji/its reading here"/></form>
+<table id="kanji-list" class="text-output">
+
+</table>
+</body>
+<script>
+var userInput = document.getElementById("user-input");
+var userForm = document.getElementById("user-form");
+var kanjiList = document.getElementById("kanji-list");
+
+function handleSubmit(e) {
+	e.preventDefault();
+	var s = textToHiragana(userInput.value);
+	console.log(s);
+	kanjiList.innerHTML = "";
+	var innerHTML = "";
+	var searchResults = "";
+	for(var i = 0; i < kanjis.length; ++i) {
+		for(var j = 0; j < kanjis[i][0].length; ++j) {
+			if(kanjis[i][0][j].indexOf(s) >= 0) {
+				innerHTML += "<tr><td>"+kanjis[i][1]+"</td></tr>";
+				break;
+			}
+		}
+	}
+	console.log(innerHTML);
+	kanjiList.innerHTML = innerHTML;
+	return false;
+}
+
+userForm.addEventListener('submit', handleSubmit);
+</script>
+</html>

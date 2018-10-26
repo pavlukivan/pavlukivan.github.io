@@ -269,6 +269,71 @@ Usually read as れつ (word end) or れっ (when at word beginning/middle).
 Radicals:
 歹|刂 = 一+タ|丨+亅
 Literally a horizontal line+ta, and then 2 vertical lines. Theres so many lines, dont you dare forgetting what it means.
+*/})],
+
+[['日', 'にち', 'じつ', 'じっ', 'か', 'け', 'ひ', 'ふ', 'あ', 'あき', 'いる', 'く', 'きさ', 'こう', 'す', 'たち', 'てる', 'しき', 'に', 'につ', 'にっ', 'はる', 'ひる', 'へ'], mcf2html(function(){/*
+#日
+Meaning - sun/day/Japan/Japanese
+The most used kanji
+The most used readings are ひ, にち, じつ
+The other readings are か, に, くさ, す
+Apparently にち is mostly used for "Japan/Japanese" meaning and days (also as a day counter - 10日 - 10 days)
+ひ is mostly used for days of the week and sun-related stuff
+じづ form is mostly unused (?), even though a lot of words *can* be written using that reading
+Notice the "mostly" - I don't think there are any exact rules here, these are just my observations and a lot of words don't "follow" these observations
+Radicals - 囗+一
+I guess you can remember it as 囗sun and a sun 一ray
+*/})],
+
+[['一', 'いち', 'いつ', 'いっ', 'ひと', 'び', 'い', 'いる', 'おさむ', 'かず', 'かつ', 'かっ', 'すすむ', 'つかさ', 'てん', 'はじめ', 'ひ', 'ひとし', 'まこと', 'もと'], mcf2html(function(){/*
+#一
+Meaning - one
+The second most used kanji
+All the readings are relatively common: いち, いつ, ひと
+It's easy to remember because it's *one* line as opposed to 二 (meaning - 2) or 三 (meaning - 3)
+*/})],
+
+[['人', 'にん', 'じん', 'ひと', 'り', 'と', 'ね', 'ひこ', 'ふみ', 'んど'], mcf2html(function(){/*
+#人
+Meaning - human
+The most used readings are じん, にん, ひと, り
+り is only used in:
+一人 - ひとり - one/single person (+derived words)
+二人 - ふたり - two people/a couple
+ひと is used as a person counter (10人 - 10ひと - 10 people)
+じん is used as a suffix to display one's relation to the word (example - 日本人 - にほん**じん** - a Japanese person)
+
+It kinda looks like a human, I guess?
+*/})],
+
+[['年', 'ねん', 'でん', 'とし', 'とせ', 'よわい', 'よはひ', 'みのり'], mcf2html(function(){/*
+#年
+Meaning - year
+The only used reading is ねん
+Used as a year counter 
+
+Radicals: 𠂉㐄
+*/})],
+
+[['大 ', 'だ', 'た', 'おお', 'たい', 'だい', 'うふ', 'お', 'た', 'たかし', 'とも', 'はじめ', 'ひろ', 'ひろし', 'ふとし', 'まさ', 'まさる', 'もと', 'ゆたか', 'わ'], mcf2html(function(){/*
+#大
+Meaning - big/large/very/university
+Readings -　た/だ/たい/だい and おお
+*/})],
+
+[['十 ', 'じゅう', 'しゅう', 'じっ', 'と', 'とお', 'い', 'か', 'ぎ', 'さ', 'し', 'そ', 'そう', 'ち', 'とう', 'ね', 'ま', 'る', 'わ'], mcf2html(function(){/*
+#十
+Meaning - ten
+Most used reading - じゅう
+All the words with とお reading:
+十日 - とおか - the tenth day of a month/ten days
+五十日　- ごとおび - days of the month ending with 0 or 5
+二百十日 - にひゃくとおか　- 210th day (from the first day of spring according to the lunar calendar)
+The only place where と reading is used is a saying - 十人十色 - じゅうにんといろ - to each his own
+じっ reading is used in the following words:
+十角形 - じっかくけい - decagon (also 二十角形 - icosagon and the like)
+十進 - じっしん - decimal
+The rest of the words use じゅう (although different readings might exist for some words, the meaning shouldn't change)
 */})]
 ];
 </script>
@@ -295,7 +360,7 @@ function handleSubmit(e) {
 	for(var i = 0; i < kanjis.length; ++i) {
 		for(var j = 0; j < kanjis[i][0].length; ++j) {
 			if(kanjis[i][0][j].indexOf(s) >= 0) {
-				innerHTML += "<tr><td>"+kanjis[i][1]+"</td></tr>";
+				innerHTML = "<tr><td>"+kanjis[i][1]+"</td></tr>"+innerHTML;
 				break;
 			}
 		}

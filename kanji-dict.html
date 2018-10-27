@@ -183,15 +183,11 @@ function mcf2html(f) { //multiline comment function (markdown) to html
 	var s = f.toString();
 	s = s.substr(14, s.length-18);
 	s = s.replace(/\n/g, '  \n'); //markdown wants double newlines but i dont
-	if(s.startsWith("列")) {
-		console.log(s.indexOf("\n"));
-		console.log(s);
-	}
 	return markdown.toHTML(s);
 }
 
 var kanjis = [
-[['新', 'しん', 'あなら', 'あら', 'にい', 'にひ'], mcf2html(function(){/*
+[['新', 'しん', 'あなら', 'あら', 'にい'], mcf2html(function(){/*
 #新
 Meaning - new
 Usually read as **しん** (example: 新幹線 - しんかんせん - bullet train)
@@ -208,7 +204,7 @@ ENEMY SUTENDO (cuz omae wa mou SHINdeiru)+tree, **r**e**T**weet (cuz who doesnt 
 */})],
 
 
-[['開', 'かい', 'け', 'ひら', 'あ', 'さく', 'はる', 'はるき', 'ひら', 'ひらかす', 'ひらき', 'ひらく'], mcf2html(function(){/*
+[['開', 'かい', 'ひら', 'あ'], mcf2html(function(){/*
 #開
 Meaning - open
 Usually read as **かい** (example: 開始 - **かい**し - start)
@@ -223,7 +219,7 @@ Consists of: 門+开
 Remember it as 廾hands 一holding that 門door to 開open it or something
 */})],
 
-[['始', 'し', 'はじ', 'とも', 'はる', 'もと'], mcf2html(function(){/*
+[['始', 'し', 'はじ'], mcf2html(function(){/*
 #始
 Meaning - beginning
 Usually read as **し** (example: 開始 - かいし - start)
@@ -235,10 +231,10 @@ Radicals: 女, ム+ロ
 woman that gives **beginning** to life|muro (just remember it xd)
 */})],
 
-[['文', 'もん', 'ぶん', 'ふみ', 'あや', 'かざり', 'ふ', 'も'], mcf2html(function(){/*
+[['文', 'もん', 'ぶん', 'ふみ', 'あや', 'ふ'], mcf2html(function(){/*
 #文
 Meaning - character/letter/sentence/saying/spell/etc
-Most used reading - **bun** (example: 文学 - bungaku - literature)
+Most used reading - **ぶん** (example: 文学 - ぶんがく - literature)
 Other readings - ふみ, もん and rarely used あや and ふ
 ぶみ reading means "letter" (example: 仮名文　- かな**ぶみ** - a letter written using kana)
 Examples for もん reading:
@@ -250,7 +246,7 @@ Examples for もん reading:
 Looks like a table that has a pen on top of it
 */})],
 
-[['字', 'じ', 'し', 'あざ', 'あざな', 'うむ', 'ます'], mcf2html(function(){/*
+[['字', 'じ', 'し', 'あざ', 'あざな'], mcf2html(function(){/*
 #字
 Meaning - character/letter/handwriting/village section/nickname
 Usually read as じ
@@ -262,7 +258,7 @@ Examples of other readings:
 Radicals: 子 (meaning - small object/a child)+宀 (top of a table with a pen on top of it)
 */})],
 
-[['列', 'れち', 'れつ', 'れっ', 'なら', 'ならべ', 'つら'], mcf2html(function(){/*
+[['列', 'れつ', 'れっ'], mcf2html(function(){/*
 #列
 Meaning - line/row/matrix column
 Usually read as れつ (word end) or れっ (when at word beginning/middle).
@@ -271,7 +267,7 @@ Radicals:
 Literally a horizontal line+ta, and then 2 vertical lines. Theres so many lines, dont you dare forgetting what it means.
 */})],
 
-[['日', 'にち', 'じつ', 'じっ', 'か', 'け', 'ひ', 'ふ', 'あ', 'あき', 'いる', 'く', 'きさ', 'こう', 'す', 'たち', 'てる', 'しき', 'に', 'につ', 'にっ', 'はる', 'ひる', 'へ'], mcf2html(function(){/*
+[['日', 'にち', 'じつ', 'じっ', 'か', 'ひ', 'す', 'に'], mcf2html(function(){/*
 #日
 Meaning - sun/day/Japan/Japanese
 The most used kanji
@@ -285,7 +281,7 @@ Radicals - 囗+一
 I guess you can remember it as 囗sun and a sun 一ray
 */})],
 
-[['一', 'いち', 'いつ', 'いっ', 'ひと', 'び', 'い', 'いる', 'おさむ', 'かず', 'かつ', 'かっ', 'すすむ', 'つかさ', 'てん', 'はじめ', 'ひ', 'ひとし', 'まこと', 'もと'], mcf2html(function(){/*
+[['一', 'いち', 'いつ', 'いっ', 'ひと'], mcf2html(function(){/*
 #一
 Meaning - one
 The second most used kanji
@@ -293,7 +289,7 @@ All the readings are relatively common: いち, いつ, ひと
 It's easy to remember because it's *one* line as opposed to 二 (meaning - 2) or 三 (meaning - 3)
 */})],
 
-[['人', 'にん', 'じん', 'ひと', 'り', 'と', 'ね', 'ひこ', 'ふみ', 'んど'], mcf2html(function(){/*
+[['人', 'にん', 'じん', 'ひと', 'り'], mcf2html(function(){/*
 #人
 Meaning - human
 The most used readings are じん, にん, ひと, り
@@ -306,7 +302,7 @@ The most used readings are じん, にん, ひと, り
 It kinda looks like a human, I guess?
 */})],
 
-[['年', 'ねん', 'でん', 'とし', 'とせ', 'よわい', 'よはひ', 'みのり'], mcf2html(function(){/*
+[['年', 'ねん'], mcf2html(function(){/*
 #年
 Meaning - year
 The only used reading is ねん
@@ -315,13 +311,13 @@ Used as a year counter
 Radicals: 𠂉㐄
 */})],
 
-[['大 ', 'だ', 'た', 'おお', 'たい', 'だい', 'うふ', 'お', 'た', 'たかし', 'とも', 'はじめ', 'ひろ', 'ひろし', 'ふとし', 'まさ', 'まさる', 'もと', 'ゆたか', 'わ'], mcf2html(function(){/*
+[['大 ', 'だ', 'た', 'おお', 'たい', 'だい'], mcf2html(function(){/*
 #大
 Meaning - big/large/very/university
 Readings -　た/だ/たい/だい and おお
 */})],
 
-[['十 ', 'じゅう', 'しゅう', 'じっ', 'と', 'とお', 'い', 'か', 'ぎ', 'さ', 'し', 'そ', 'そう', 'ち', 'とう', 'ね', 'ま', 'る', 'わ'], mcf2html(function(){/*
+[['十 ', 'じゅう', 'しゅう', 'じっ', 'と', 'とお'], mcf2html(function(){/*
 #十
 Meaning - ten
 Most used reading - じゅう
@@ -334,12 +330,88 @@ The only place where と reading is used is a saying - 十人十色 - じゅう�
 十角形 - じっかくけい - decagon (also 二十角形 - icosagon and the like)
 十進 - じっしん - decimal
 The rest of the words use じゅう (although different readings might exist for some words, the meaning shouldn't change)
+*/})],
+
+[['二', 'に', 'ふ', 'ふた', 'じ'], mcf2html(function(){/*
+#二
+Meaning - two/second
+Most used reading - に
+Generally used as a prefix
+Other readings:
+ふ - used in 二日 - ふつか - second day of the month (+derived words)
+Words with ふた reading:
+二つ - ふたつ - two things
+二人 - ふたり - two people
+二子 - ふたご - twins
+二つ名 - ふたつな - nickname (second name)
+二股膏薬 - ふたまたこうやく - double-dealer/moving between two sides in conflict
+二見 - ふたみ - forked/split (road/river)
+じ reading is used in 不二 - ふじ - "2 sides of the same coin" and names
+Just like 一 - one and 三 - three it's easy to remember - 二 - two
+*/})],
+
+[['本', 'ほん', 'もと'], mcf2html(function(){/*
+#本
+Meaning - a book/script/scenario, source/origin/root
+Main reading is - ほん, it's used as a counter for for:
+long cylindrical things (glasses of drink, pairs of jeans, pens, trains, buses, etc
+films/TV shows
+home runs/goals
+rounds of match in boxing/wrestling/judo
+Words with もと reading:
+木本 - もくほん - tree
+本 - もと - root/origin
+山本　- やまもと - mountain base
+Counter for blades of grass, tree trunks and falcons
+Used in 日本 - にほん - Japan 
+*/})],
+
+[['中', 'ちゅう', 'なか', 'うち'], mcf2html(function(){/*
+#中
+Meaning - middle/average/during, China, being in the process of, inside
+Readings: ちゅう, なか, うち
+The only word with うち reading is 中 - うち - inside
+The reading depends on the word meaning:
+なか - inside
+ちゅう - within
+じゅう - throughout
+You can remember it as a 丨line going through a 口rectangle
+*/})],
+
+[['出', 'しゅつ', 'で', 'だ', 'い'], mcf2html(function(){/*
+#出
+Meaning - to come out, something that comes out
+Most common readings: しゅつ, で, だ
+Words using い reading:
+お出で - おいで - to come/go/be (somewhere)/stay (honorific)
+見出だす (also written as 見出す) - みいだす - to find out
+Just look at this kanji - it looks like it really wants to go up.
+*/})],
+
+[['三', 'さん', 'み'], mcf2html(function(){/*
+#三
+Meaning - three
+Most common reading: さん
+The only words using み reading:
+三つ編み - みつあみ - braid/plait
+三日月 - みかづき - crescent moon
+三十路 - みそじ - one's thirties (age)
+Just as 一 - one and 二 - two, 三 - three is very easy to remember.
+*/})],
+
+[['見', 'けん', 'み'], mcf2html(function(){/*
+#見
+Meaning - to look/the look (of something)/a view/to see/a view (opinion)
+Reading: み and けん
+けん is generally used in the "point of view/opinion" meaning
+み is used for everything eye-related
+Looks like a torn out eye with the nerves facing down
 */})]
 ];
 </script>
 </head>
 <body>
-<div class="text-output2">This is a kanji dictionary made by me for me. It might have some errors, some obscure references or whatever. I don't even guarantee its correctness, but if you noticed any errors - please contact me.</div>
+<div class="text-output2">This is a kanji dictionary made by me for me. It might have some errors, some obscure references or whatever. I don't even guarantee its correctness, but if you noticed any errors - please contact me. Disclaimer - I might list "all the words with X reading". That simply means there's just a few words with that reading - they might be unused, but I'm listing there just so you know they have a different reading if you ever meet them, you don't even need to remember most of them, just do it if the word seems common. Also the reading might be used as a secondary reading in other words, or I might've missed some words.</div>
 <form id="user-form"><input type="text" id="user-input" class="text-input" placeholder="Enter kanji/its reading here"/></form>
 <table id="kanji-list" class="text-output">
 

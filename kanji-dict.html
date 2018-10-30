@@ -405,7 +405,7 @@ Literally a horizontal line+ta, and then 2 vertical lines. Theres so many lines,
 ];
 
 var kanjis = [
-[[''], mcf2html(function(){/*
+[['misc'], mcf2html(function(){/*
 #Misc
 A category for the words without any kanjis
 
@@ -2911,7 +2911,7 @@ var userForm = document.getElementById("user-form");
 var kanjiList = document.getElementById("kanji-list");
 
 function handleSubmit(e) {
-	e.preventDefault();
+	if(e) e.preventDefault();
 	var s = textToHiragana(userInput.value);
 	//console.log(s);
 	kanjiList.innerHTML = "";
@@ -2920,7 +2920,7 @@ function handleSubmit(e) {
 	for(var i = 0; i < kanjis.length; ++i) {
 		for(var j = 0; j < kanjis[i][0].length; ++j) {
 			if(kanjis[i][0][j].indexOf(s) >= 0) {
-				innerHTML += "<tr><td>"+kanjis[i][1]+"</td></tr>";
+				innerHTML += "<tr><td><div id=\""+kanjis[i][0][0]+"\">"+kanjis[i][1]+"</div></td></tr>";
 				break;
 			}
 		}
@@ -2929,7 +2929,7 @@ function handleSubmit(e) {
 	kanjiList.innerHTML = innerHTML;
 	return false;
 }
-
+handleSubmit(null);
 userForm.addEventListener('submit', handleSubmit);
 </script>
 </html>

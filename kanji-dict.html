@@ -6,6 +6,16 @@ html {
 	background: #fafafa;
 }
 
+.spoilerButton {
+	background: #F5F5F5;
+	border: 1px solid #000000;
+}
+
+.spoilerButton:hover {
+	background: #F0F0F0;
+	border: 1px solid #000000;
+}
+
 .text-output {
 	color: #5e5e5e;
 	font: bold 20px arial;
@@ -179,14 +189,31 @@ function textToHiragana(text) {
 	return ret;
 }
 
+function replaceAll(str, search, replacement) {
+    return str.split(search).join(replacement);
+}
+
 function mcf2html(f) { //multiline comment function (markdown) to html
 	var s = f.toString();
 	s = s.substr(14, s.length-18);
-	s = s.replace(/\n/g, '  \n'); //markdown wants double newlines but i dont
-	return markdown.toHTML(s);
+	s = replaceAll(s, '\n', '  \n'); //markdown wants double newlines but i dont
+	var ret = markdown.toHTML(s);
+	for(var i = 1; i <= 5; ++i)
+		ret = replaceAll(ret, '&lt;jlpt'+i.toString()+'&gt;', '<div class="spoiler"><input class="spoilerButton" type="button" onclick="toggleSpoiler(this);" value="JLPT'+i.toString()+' words (Show/Hide)" /><div class="inner" style="display:none;">');
+	return replaceAll(ret, '&lt;/jlpt&gt;', '</div></div>');
 }
 
-var kanjis = [
+function toggleSpoiler(obj) {
+	var inner = obj.parentNode.getElementsByTagName("div")[0];
+	if (inner.style.display == "none") {
+		inner.style.display = "";
+	} else {
+		inner.style.display = "none";
+	}
+}
+
+var kanjisForLater = [
+
 [['新', 'しん', 'あなら', 'あら', 'にい'], mcf2html(function(){/*
 #新
 Meaning - new
@@ -198,6 +225,20 @@ All the words with non-しん readings (names not included):
 新た - **あら**た - new
 新手 - **あら**て - beginner/newcomer/a new method to do something
 新妻 - **にい**ずま - a new wife
+
+JLPT4 words:
+新聞社 - **しん**ぶんしゃ - newspaper company
+JLPT3 words:
+新た - **あら**た - new
+新鮮 - **しん**せん - fresh
+JLPT2 words:
+新幹線 - しんかんせん - bullet train
+JLPT1 words:
+革新 - かくしん - reform/innovation
+新 - しん - new
+新興 - しんこう - rising/developing/emergent
+新婚 - しんこん - newly-wed
+新人 - しんじん - new face/newcomer
 
 Radicals: 立+木, 斤
 ENEMY SUTENDO (cuz omae wa mou SHINdeiru)+tree, **r**e**T**weet (cuz who doesnt rt jojo memes)
@@ -213,6 +254,24 @@ Examples:
 開く - **あ**く/**ひら**く - to open/begin, 開ける - **あ**ける/**ひら**ける - to open/make (a hole)
 The words can have slightly different meaning with あ compared to ひら or their "counterparts" might not exist at all so they aren't exactly interchangeable
 
+JLPT4 words:
+開く - ひらく - to open/undo/unseal/unpack/bloom/unfold/spread out/open (for business, e.g. in the morning)/be wide (gap, etc.)/widen/hold (meeting, etc.)
+JLPT3 words:
+開始 - かいし - start/commencement/beginning/initiation
+JLPT2 words:
+開会 - かいかい - opening of a meeting
+開通 - かいつう - opening/open/taking effect/becoming active
+開放 - かいほう - open/throw open/liberalization
+展開 - てんかい - development/evolution/progressing/unfolding/expansion/spreading out/extending/deployment/building up
+JLPT1 words:
+開催 - かいさい - holding a meeting/opening an exhibition/hosting (e.g. the Olympics)
+開拓 - かいたく - reclamation (of wasteland)/cultivation/pioneering/reclamation
+開発 - かいはつ - development/exploitation
+公開 - こうかい - opening to the public/making available to the public/putting on display/exhibiting/showing (play, movie, etc.)/holding (interview, etc.)/open/public
+切開 - せっかい - incision/operation/section
+打開 - だかい - break in the deadlock
+未開 - みかい - savage land, backward region, uncivilized
+
 Consists of: 門+开
 門 - door/gate
 开 - literally another form of 開, consists of 廾 (hands)+一. 
@@ -227,6 +286,22 @@ The other reading is はじ, it's used when 始 is postfixed by め or ま
 The only exception is 見始 - an alternative spelling for 見始め
 Examples for はじ spelling:
 始める/始まる - **はじ**める/**はじ**まる - to begin, 始め - **はじ**め - beginning
+
+JLPT4 words:
+始める - はじめる - to start/begin/commence/initiate/originate
+JLPT3 words:
+開始 - かいし - start/commencement/beginning/initiation
+JLPT2 words:
+原始 - げんし - origin/primeval/genesis
+始終 - しじゅう - continuously/from beginning to end
+始めに - はじめに - to begin with/first of all
+JLPT1 words:
+始発 - しはつ - first (train/bus/...) departure (of the day)
+始末 - しまつ - management/dealing/settlement/cleaning up/getting rid of/economizing/being thrifty/(bad) end result
+終始 - しゅうし - beginning and end, from beginning to end, doing a thing from beginning to end
+始め - はじめ - beginning/start/outset/opening/first (in line, etc.)/origin/such as .../not to mention ...
+始めまして	はじめまして	How do you do?/I am glad to meet you
+
 Radicals: 女, ム+ロ
 woman that gives **beginning** to life|muro (just remember it xd)
 */})],
@@ -243,6 +318,34 @@ Examples for もん reading:
 文句 - **もん**く - complaint
 文言 - **もん**ごん - wording/phrasing
 
+JLPT4 words:
+文化 - ぶんか - culture/civilization
+文学 - ぶんがく - literature
+文法 - ぶんぽう - grammar/syntax
+JLPT3 words:
+注文 - ちゅうもん - order/request
+文 - ぶん - sentence/text
+文明 - ぶんめい - civilization/culture
+文字 - もじ/もんじ - letter (of alphabet)/character
+文句 - もんく - phrase/complaint
+論文 - ろんぶん - thesis/essay/treatise/paper/article
+JLPT2 words:
+英文 - えいぶん - sentence in English/article in English/text in English/(study of) English literature
+人文科学 - じんぶんかがく - social sciences/humanities/liberal arts
+文芸 - ぶんげい - literature/art and literature/belles-lettres
+文献 - ぶんけん - literature/books (reference)/document
+文体 - ぶんたい - literary style
+文房具 - ぶんぼうぐ - stationery
+文脈 - ぶんみゃく - context
+JLPT1 words:
+原文 - げんぶん - the text/original
+文 - ふみ - letter/writings
+文化財 - ぶんかざい - cultural assets/cultural property
+文語 - ぶんご - written language/literary language
+文書 - ぶんしょ - document/writing/letter/paperwork/note/records/archives
+本文 - ほんぶん - text (of document), body (of letter)
+和文 - わぶん - Japanese text, sentence in Japanese
+
 Looks like a table that has a pen on top of it
 */})],
 
@@ -255,6 +358,26 @@ Rare readings - あざ and あざな.
 Examples of other readings:
 大字 - おお**あざ** - big character/letter/village section
 小字 - こ**あざ** - childhood nickname
+
+JLPT4 words:
+字 - じ - character
+JLPT3 words:
+数字 - すうじ - numeral/figure/digit/numeric character
+文字 - もじ/もんじ - letter (of alphabet)/character/literal
+JLPT2 words:
+活字 - かつじ - printing type/movable type/printed text/print
+習字 - しゅうじ - penmanship
+名字 - みょうじ - surname/family name
+JLPT1 words:
+赤字 - あかじ - deficit/(being in or going into) the red/red text/red letters/corrections (by a teacher or proofreader) written in red
+字 - あざ - section of village
+当て字 - あてじ - phonetic-equivalent character/substitute character/kanji used for their meaning, irrespective of reading/kanji used as a phonetic symbol, instead of for the meaning
+英字 - えいじ - English letter (character)
+黒字 - くろじ - balance (figure) in the black
+字体 - じたい - type/font/lettering
+十字路 - じゅうじろ - crossroads
+ローマ字 - ローマじ - romaji/romanization/Roman letters
+
 Radicals: 子 (meaning - small object/a child)+宀 (top of a table with a pen on top of it)
 */})],
 
@@ -262,9 +385,1129 @@ Radicals: 子 (meaning - small object/a child)+宀 (top of a table with a pen on
 #列
 Meaning - line/row/matrix column
 Usually read as れつ (word end) or れっ (when at word beginning/middle).
+
+JLPT3 words:
+列 - れつ - queue,line,row
+列車 - れっしゃ - train (ordinary)
+JLPT2 words:
+行列 - ぎょうれつ - line/queue/procession/parade/(maths) matrix
+列島 - れっとう - chain of islands
+JLPT1 words:
+整列 - せいれつ - standing in a row/forming a line/alignment
+陳列 - ちんれつ - exhibition/display/show
+配列 - はいれつ - arrangement/disposition/(programming) array
+並列 - へいれつ - arrangement/parallel/abreast
+
 Radicals:
 歹|刂 = 一+タ|丨+亅
 Literally a horizontal line+ta, and then 2 vertical lines. Theres so many lines, dont you dare forgetting what it means.
+*/})]
+];
+
+var kanjis = [
+[[''], mcf2html(function(){/*
+#Misc
+A category for the words without any kanjis
+
+<jlpt5>
+あさって - day after tomorrow
+あそこ - over there
+あちら - there
+あっち - over there
+あなた - you
+あの - that over there
+あの - um...
+アパート - apartment
+あびる - to bathe/to shower
+あまり - not very
+ある - to be/to have (used for inanimate objects)
+あれ - that
+いい/よい - good
+いいえ - no
+いかが - how
+いくつ - how many?/how old?
+いくら - how much?
+いす - chair
+いちばん - best/first
+いつ - when
+いつも - always
+いろいろ - various
+ええ - yes
+エレベーター - elevator
+おいしい - delicious
+おなか - stomach
+おばあさん - grandmother/female senior-citizen
+おまわりさん - friendly term for policeman
+おもしろい - interesting
+かかる - to take time or money
+かぎ - key
+かける - to call by phone
+カップ - cup
+かばん - bag/basket
+カメラ - camera
+カレー - curry
+カレンダー - calendar
+かわいい - cute
+ギター - guitar
+きれい - pretty/clean
+キロ/キログラム - kilogram
+キロ/キロメートル - kilometre
+ください - please
+クラス - class
+グラム - gram
+コート - coat/tennis court
+コーヒー - coffee
+ここ - here
+こちら - this person or way
+こっち - this person or way
+コップ - a glass
+この - this
+コピーする - to copy
+これ - this
+こんな - such
+さあ - well…
+しかし - however
+じゃ/じゃあ - well then…
+シャツ - shirt
+シャワー - shower
+しょうゆ - soy sauce
+スカート - skirt
+すぐに - instantly
+ストーブ - heater
+スプーン - spoon
+スポーツ - sport
+ズボン - trousers
+スリッパ - slippers
+する - to do
+セーター - sweater/jumper
+せっけん - soap
+ゼロ - zero
+そうして/そして - and
+そこ - that place
+そちら - over there
+そっち - over there
+その - that
+そば - near/beside
+それ - that
+それから - after that
+それでは - in that situation
+たいへん - very
+たいへん - difficult situation
+たくさん - many
+タクシー - taxi
+たて - length/height
+たばこ - tobacco/cigarettes
+たぶん - probably
+だんだん - gradually
+ちゃわん - rice bowl
+ちょうど - exactly
+ちょっと - somewhat
+つける - to turn on
+つまらない - boring
+テープ - tape
+テーブル - table
+テープレコーダー - tape recorder
+できる - to be able to
+テスト - test
+では - with that...
+デパート - department store
+でも - but
+テレビ - television
+ドア - Western style door
+トイレ - toilet
+どう - how/in what way
+どうして - for what reason
+どうぞ - please
+どうも - thanks
+どこ - where
+どちら - which of two
+どっち - which
+とても - very
+どなた - who
+どの - which
+どれ - which (of three or more)
+ナイフ - knife
+なぜ - why
+など - et cetera
+なる - to become
+ニュース - news
+ネクタイ - tie/necktie
+ノート - notebook/exercise book
+パーティー - party
+はい - yes
+はく - to wear/to put on trousers
+はし - chopsticks
+バス - bus
+バター - butter
+パン - bread
+ハンカチ - handkerchief
+フィルム - roll of film
+プール - swimming pool
+フォーク - fork
+ふろ - bath
+ページ - page
+ベッド - bed
+ペット - pet
+ペン - pen
+ボールペン - ball-point pen
+ほか - other/the rest
+ポケット - pocket
+ポスト - post
+ボタン - button
+ホテル - hotel
+ほんとう - truth
+まずい - unpleasant
+また - again/and
+まだ - yet/still
+まっすぐ - straight ahead/direct
+マッチ - match
+みんな - everyone
+メートル - metre
+もう - already
+もっと - more
+やる - to do
+ゆっくりと - slowly
+よく - often/well
+ラジオ - radio
+ラジカセ / ラジオカセット - radio cassette player
+りっぱ - splendid
+レコード - record
+レストラン - restaurant
+ワイシャツ - business shirt
+より、ほう - Used for comparison.
+</jlpt>
+<jlpt4>
+あ - Ah
+ああ - like that
+あかちゃん - baby
+あげる - to give
+あんな - such
+いじめる - to tease
+いっぱい - full
+いらっしゃる - (respectful) to be/to come or to go
+うち - within
+うん - (informal) yes
+おいでになる - (respectful) to be
+おかげ - owing to/thanks to
+おかしい - strange or funny
+おっしゃる - (respectful) to say
+おつり - change from purchase/balance
+おもちゃ - toy
+ガス - gas
+きっと - surely
+くれる - to give
+けれど/けれども - however
+けんか・する - to quarrel
+こう - this way
+ごちそう - a feast
+このあいだ - the other day/recently
+このごろ - these days/nowadays
+ごらんになる - (respectful) to see
+これから - after this
+さっき - some time ago
+しっかり - firmly/steadily
+しばらく - little while
+すっかり - completely
+すっと - straight/all of a sudden
+すり - pickpocket
+すると - then
+そう - really
+それで - because of that
+それに - moreover
+それほど - to that extent
+そろそろ - gradually/soon
+そんな - that sort of
+そんなに - so much/like that
+たいてい - usually
+だから - so/therefore
+たまに - occasionally
+チェック・する - to check
+ちっとも - not at all (used with a negative verb)
+ちゃん - suffix for familiar  person
+つもり - intention
+とうとう - finally/after all
+とこや - barber
+どんどん - more and more
+なさる - (respectful) to do
+なるべく - as much as possible
+なるほど - now I understand
+ぬれる - to get wet
+ねだん - price
+はず - it should be so
+はっきり - clearly
+ひきだす - to withdraw
+ひげ - beard
+ひどい - awful
+ぶどう - grapes
+ほとんど - mostly
+ほめる - to praise
+または - or/otherwise
+もうすぐ - soon
+もし - if
+やっと - at last
+アクセサリー - accessory
+アジア - Asia
+アナウンサー - announcer
+アフリカ - Africa
+アメリカ - America
+アルコール - alcohol
+アルバイト - part-time job
+エスカレーター - escalator
+オートバイ - motorcycle
+カーテン - curtain
+ガス - gas
+ガソリン - petrol
+ガソリンスタンド - petrol station
+ガラス - a glass pane
+ケーキ - cake
+コンサート - concert
+コンピューター - computer
+サラダ - salad
+サンダル - sandal
+サンドイッチ - sandwich
+ジャム - jam
+スーツ - suit
+スーツケース - suitcase
+スクリーン - screen
+ステーキ - steak
+ステレオ - stereo
+ソフト - soft
+タイプ - type/style
+チェック・する - to check
+テキスト - text/text book
+テニス - tennis
+パート - part time
+パソコン - personal computer
+ハンドバッグ - handbag
+ピアノ - piano
+ビル - building or bill
+ファックス - fax
+プレゼント - present
+ベル - bell
+レジ - register
+レポート/リポート - report
+ワープロ - word processor
+</jlpt>
+<jlpt3>
+あいにく - unfortunately/Sorry/but....
+あちこち - here and there
+あっ - Ah!/Oh!
+あらゆる - all/every
+ありがとう - (conj/exp/int) Thank you
+あるいは - or/possibly
+あんなに - to that extent/to that degree
+あんまり - not very/not much/remainder/rest
+いけない - must not do/bad/wrong/not good
+いずれ - which/either/one
+いたずら - tease/prank/trick/practical joke
+いただきます - expression of gratitude before meals
+いつか - sometime/someday/one day
+いつでも - (at) any time/always/at all times/never (neg)
+いつまでも - forever/for good/eternally/as long as one likes/indefinitely
+いつも - always/usually/every time/never (with neg. verb)
+いらいら - getting nervous/irritation
+いらっしゃい - welcome
+いわゆる - the so-called/so to speak
+うがい - gargle/rinse mouth
+うなる - to groan/to moan
+おしゃべり - chattering/talk/idle talk
+おそらく - perhaps
+おまえ - (fam) you (sing)
+おめでとう - Congratulations!/an auspicious occasion!
+およそ - about/roughly/as a rule/approximately
+がっかり - feel disappointed/be dejected/lose heart
+かなり - considerably/fairly/quite
+かもしれない - may/might/perhaps/may be/possibly
+かわいそう - poor/pitiable/pathetic
+かわいらしい - lovely/sweet
+きちんと - precisely/accurately
+きつい - tight/close/intense
+キロ - (abbr) kilo-/kilogram/kilometre/10^3
+ぐっすり - sound asleep/fast asleep
+けち - stinginess/miser/miserliness
+ごめんなさい - I beg your pardon/excuse me
+これら - these
+こんなに - so/like this/in this way
+こんにちは - hello/good day (daytime greeting/id)
+ざっと - roughly/in round numbers
+さっぱり - feeling refreshed/feeling relieved/neat/trimmed
+さて - well/now/then
+しかも - moreover/furthermore/nevertheless/and yet
+しきりに - frequently/repeatedly/incessantly/eagerly
+じっと - fixedly/firmly/patiently/quietly
+しばしば - often/again and again/frequently
+しまう - to finish/to close/put an end
+しまった - Damn it!
+しゃべる - to talk/to chat/to chatter
+すごい - terrible/dreadful/terrific/amazing/great
+ずっと - consecutively/throughout/a lot
+すてき - lovely/dreamy/beautiful/great
+すなわち - that is/namely/i.e.
+すみません - sorry/excuse me
+そこで - so (conj)/accordingly/now/then/thereupon
+そして - and
+そっくり - all/altogether/entirely/be just like/the splitting image of
+そっと - face of the earth
+そのうち - eventually/sooner or later/of the previously mentioned
+そのまま - without change/as it is (i.e. now)
+それ - it/that
+それぞれ - each/every/either/respectively/severally
+それでも - but (still)/and yet/nevertheless/even so/notwithstanding
+それとも - or/or else
+だけど - however
+ただ - free of charge/
+だって - but/because/even/also/too
+たっぷり - full/in plenty/ample
+たとえ - simile/metaphor/allegory
+たびたび - often/repeatedly/frequently
+たまらない - intolerable/unbearable/unendurable
+ちゃんと - perfectly/properly/exactly
+ちょうだい - please do for me (preceded by -te)/reception/being given/get (spoken)
+つまり - in short/in brief/in other words
+できる - to be able to/to be ready/to occur
+できれば - if at all possible
+ですから - therefore
+どうしても - by all means/at any cost/no matter what
+どこか - somewhere/anywhere
+ところが - however/while/even if
+ところで - by the way/even if/no matter what
+とにかく - anyhow/at any rate/anyway/somehow or other/generally speaking/in any case
+とんでもない - unexpected/offensive/What a thing to say!/No way!
+どんな - what/what kind of
+どんなに - how/how much
+なお - straight/mischief/ordinary/common
+なかなか - very/considerably/easily
+なぜなら - because
+なにも - nothing
+にっこり - smile sweetly/smile/grin
+のんびり - carefree/at leisure
+はあ - Yes/Uh-huh/I see/
+はさみ - scissors
+ばったり - with a clash (thud)/with a bang/plump/flop
+びっくり - be surprised/be amazed/be frightened/astonishment
+ぴったり - exactly/neatly/sharp
+ふと - suddenly/casually/accidentally/incidentally/unexpectedly/unintentionally
+ほぼ - almost/roughly/approximately
+ぼんやり - absent-minded/block-head/dim/faint/vague
+まあ - (female) you might say
+マイク - mike
+まさか - nonsense/that's impossible/
+まさに - correctly/surely
+ますます - increasingly/more and more
+まるで - quite/entirely/completely
+もしも - if
+やがて - before long/soon/at length
+やはり - also/as I thought/still/in spite of/absolutely/of course
+やや - a little/partially/somewhat/a short time/a while
+ゆっくり/と - slowly/at ease
+よい - good/nice/pleasant/ok
+よると - according to
+よろしく - well/properly/suitably/best regards/please remember me
+わがまま - selfishness/wilfulness/whim
+わざと - on purpose
+アイスクリーム - ice cream
+アイロン - (electric) iron
+アウト - out
+アルバム - album
+インク - ink
+ウイスキー - whisky
+エネルギー - (n) energy (de: Energie)
+エンジン - engine
+オーバー - overcoat/over
+オフィス - office
+カー - car
+カード - card/curd
+キャプテン - captain
+キャンプ - camp
+キロ - (abbr) kilo-/kilogram/kilometre/
+クラシック - classic(s)
+グラス - glass/grass
+グランド - gland/grand/(electrical) ground
+クリーム - cream
+クリスマス - Christmas
+グループ - group
+ケース - case
+ゲーム - game
+コーチ - coach
+コード - code/cord/chord
+ゴール - goal
+コピー - a (photo)copy/blurb on a book jacket
+コンピューター - computer
+サービス - service/support system/goods or services without charge
+サイン - autograph/sign/sine
+ジーンズ - jeans
+ジュース - juice/soft drink/deuce
+スイッチ - switch
+スープ - (Western) soup
+スキー - skiing
+スケート - skate(s)/skating
+スター - star
+スタイル - style
+スタンド - stand
+スピーチ - speech
+セット - set
+センター - a center
+ソファー - sofa/couch
+タイプライター - typewriter
+ダイヤ - diagram/(railway) schedule/diamond
+タオル - towel
+ダンス - dance
+チーズ - cheese
+チーム - team
+チャンス - chance/opportunity
+デート - date/go on a date
+デモ - (abbr) demo/demonstration
+テント - tent
+トップ - top
+ドライブ - drive/trip by car/driving
+トラック - truck/(running) track
+ドラマ - drama
+トランプ - playing cards (lit: trump)
+ドレス - dress
+トン - ton
+トンネル - tunnel
+ノー - no
+ノック - knock/fungo (baseball)
+パーセント - percent
+バイオリン - violin
+ハイキング - hiking
+パイプ - pipe/tube/channels/official or otherwise
+パイロット - pilot
+パス - path/pass (in games)
+パスポート - passport
+バッグ - bag/
+バン - bun/van (caravan)/VAN (value-added network)
+ハンサム - handsome
+ビール - beer
+ピクニック - picnic
+ビデオ - video
+ピン - pin
+プラス - plus
+プラン - plan
+ブレーキ - a brake
+プロ - professional
+ベルト - Belt for western clothes
+ペンキ - (n) paint (nl: pek)
+ベンチ - bench
+ボーイ - boy
+ボート - rowing boat
+ホーム - platform/home
+ボール - ball/bowl
+マーケット - market
+マイク - mike
+マスター - proprietor/manager/barowner/master (e.g. arts/science)
+ママ - Mama
+ミス - miss (mistake/error/failure)/Miss
+ミルク - milk
+メモ - memorandum
+メンバー - member
+ユーモア - humor
+ヨーロッパ - Europe
+ヨット - yacht
+ライター - lighter/rider/writer
+ラケット - racket/paddle/
+レポート - report/paper
+ロケット - locket/rocket
+ワイン - wine
+</jlpt>
+<jlpt2>
+あいかわらず - as ever/as usual/the same
+アイデア/アイディア - idea
+あいまい - vague/ambiguous
+あかんぼう - baby
+あきれる - to be amazed/to be shocked
+アクセント - accent
+あくび - yawn
+あげる (=やる) - to do for
+あたりまえ - usual/common/ordinary
+あちらこちら - here and there
+あてはまる - to be applicable/to come under (a category)/to fulfill
+あてはめる - to apply/to adapt
+あぶる - to scorch
+あふれる - to flood/to overflow/to brim over
+あらすじ - outline/summary
+あれこれ - one thing or another/this and that/this or that
+あわただしい - busy/hurried/confused/flurried
+あわてる - to become confused
+アンテナ - antenna
+いきなり - (uk) abruptly/suddenly/all of a sudden/without warning
+イコール - equal
+いちいち - one by one/separately
+いっていらっしゃい - 
+いってらっしゃい - 
+いってまいります - 
+いつのまにか - before one knows/unnoticed/unawares
+いよいよ - more and more/all the more/increasingly/at last/beyond doubt
+インキ - ink
+インタビュー - interview
+ウーマン - woman
+ウール - wool
+ウエートレス - waitress
+うっかり - carelessly/thoughtlessly/inadvertently
+うどん - noodles (Japanese)
+うろうろ - loiteringly/aimless wandering
+うんと - a great deal/very much
+ええと - let me see/well/er....
+エチケット - etiquette
+エプロン - apron
+オイル - oil/engine oil/kerosene
+オーケストラ - orchestra
+おおざっぱ - rough (not precise)/broad/sketchy
+オートメーション - automation
+オーバーコート - 
+おかけください - 
+おかげさまで - Thanks to god/thanks to you
+おかず - side dish/accompaniment for rice dishes
+おきのどくに - 
+おくさん - (hon) wife/your wife/madam
+おげんきで - 
+おさきに - before/ahead/previously
+おしゃれ - smartly dressed/someone smartly dressed/fashion-conscious
+おじゃまします - Excuse me for disturbing you
+おだいじに - Take care of yourself
+おどかす - to threaten/to coerce
+おととい - day before yesterday
+おととし - year before last
+おとなしい - obedient/docile/quiet
+おねがいします - please
+おはよう - (abbr) Good morning
+おまたせしました - Sorry to have kept you waiting
+おまちください - Please wait a moment
+おまちどおさま - Sorry to have kept you waiting
+おめでたい - happy event/matter for congratulation/auspicious event/pregnancy
+おやすみ - holiday/absence/rest/(exp) Good night
+おやつ - between meal snack/afternoon refreshment
+オルガン - organ
+カーブ - curve/curve ball (baseball)
+かしこまりました - certainly!
+かじる - to chew/to bite (at)/to gnaw/to nibble
+カセット - cassette (tape)
+カバー - cover (ex. book)
+ガム - chewing gum
+かゆい - itchy/itching
+カラー - collar/color/colour
+からかう - to ridicule/to tease/to banter with/to make fun of
+かるた - (n) playing cards (pt: carta)
+カロリー - calorie
+かわいがる - to love/to be affectionate
+きっかけ - chance/start/cue/excuse
+ぎっしり - tightly/fully
+ギャング - gang
+キャンパス - campus
+クーラー - cooler/air conditioner
+くしゃみ - sneeze
+くたびれる - to get tired/to wear out
+くだらない - good-for-nothing/stupid/trivial/worthless
+くっつく - to adhere to/to keep close to
+くっつける - to attach
+くどい - verbose/importunate/heavy (taste)
+クリーニング - cleaning/dry cleaning/laundry service
+くるむ - to be engulfed in/to be enveloped by/to wrap up
+くれぐれも - repeatedly/sincerely/earnestly
+コース - course
+コーラス - chorus
+ごくろうさま - Thank you very much for your....
+こしらえる - to make/to manufacture
+ごぞんじですか - 
+ごちそうさま - feast
+こちらこそ - it is I who should say so
+コック - cook (nl:)/tap/spigot/faucet/cock
+こっそり - stealthily/secretly
+こないだ - the other day/lately/recently
+こぼす - to spill
+こぼれる - to overflow/to spill
+ゴム - gum/rubber/eraser
+ごめんください - May I come in?
+こらえる - to bear/to stand/to endure/to put up with
+コレクション - collection/correction
+コンクール - contest (fr: concours)
+コンクリート - concrete
+コンセント - consent/concentric
+こんばんは - good evening
+サークル - circle/sports club (i.e. at a company)
+サイレン - siren
+さきおととい - two days before yesterday
+さっさと - quickly
+さようなら - good-bye
+サラリーマン - salary man/company employee
+さわやか - fresh/refreshing/invigorating
+サンプル - sample
+しあさって - two days after tomorrow
+シーズン - season (sporting)
+シーツ - sheet
+しつこい - insistent/obstinate
+しっぽ - tail (animal)
+しびれる - to become numb/to go to sleep (i.e./a limb)
+しぼむ - to wither/to fade (away)/to shrivel/to wilt
+しみじみ - keenly/deeply/heartily
+ジャーナリスト - journalist
+しゃがむ - to squat
+しゃっくり - hiccough/hiccup
+シャッター - shutter
+しゃぶる - to suck/to chew
+じゃんけん - (n) rock-scissors-paper game
+しょうがない - 
+ショップ - a shop
+シリーズ - series
+ずうずうしい - impudent/shameless
+ずうっと - 
+スカーフ - scarf
+スクール - school
+すくなくとも - at least
+スケジュール - schedule
+スタート - start
+スチュワーデス - stewardess
+すっきり - shapely/clear/neat
+すっぱい - sour/acid
+ステージ - stage/performance
+ストッキング - stockings
+ストップ - stop
+スピーカー - speaker
+スマート - smart/stylish/slim
+すまない - sorry (phrase)
+スライド - slide
+ずらす - to put off/to delay
+ずらり - 
+すれちがう - to pass by one another/to disagree
+せっせと - 
+ぜひとも - by all means (with sense of not taking no for an answer)
+ゼミ - (n) seminar
+せめて - offense/method of attack
+セメント - cement
+センチ - centimeter/centi-/10^-2
+そういえば - which reminds me ..
+そうして - and/like that
+そうっと - 
+そそっかしい - careless/thoughtless
+そのうえ - in addition/furthermore
+そのころ - 
+そのため - hence/for that reason
+そのほか - otherwise
+それなのに - 
+タイア - tire/tyre
+ダイヤグラム - diagram
+ダイヤモンド - diamond
+ダイヤル - dial
+たちまち - at once/in a moment/suddenly/all at once
+ダブル - double
+だます - to trick/to cheat/to deceive
+ダム - dumb
+ためらう - to hesitate
+だらしない - slovenly/loose/a slut
+たんす - chest of drawers
+ちぎる - to cut up fine/to pick (fruit)
+チップ - gratuity/tip/chip
+チョーク - chock/chalk
+ついで - opportunity/occasion
+つまずく - to stumble/to trip
+テーマ - (n) theme/project/topic (de: Thema)
+でたらめ - irresponsible utterance/nonsense/nonsensical/random
+テニスコート - tennis court
+テンポ - tempo
+どうせ - anyhow/in any case/at any rate
+どうぞよろしく - pleased to meet you
+どきどき - throb/beat (fast)
+とっくに - long ago/already/a long time ago
+どっと - suddenly
+どなる - to shout/to yell
+ともかく - anyhow/anyway/somehow or other/generally speaking/in any case
+トレーニング - training
+ナイロン - nylon
+なぐる - to strike/to hit
+なにしろ - at any rate/anyhow/anyway/in any case
+なんとなく - somehow or other/for some reason or another
+なんとも - nothing (with neg. verb)/quite/not a bit
+ナンバー - number
+にこにこ - 
+ねじ - (a) screw
+ネックレス - necklace
+のこぎり - saw
+のろのろ - slowly/sluggishly
+バイバイ - 
+ばからしい - absurd
+はきはき - lucidly
+バケツ - bucket/pail
+はじめまして - How do you do?/I am glad to meet you
+パターン - pattern
+バック - back
+ばね - spring (e.g. coil/leaf)
+はめる - (col) to get in/to insert/to put on/to make love
+バランス - balance
+パンツ - underpants
+バンド - band
+ハンドル - handle/steering wheel
+ぴかぴか - glitter/sparkle
+ピストル - pistol
+ビタミン - vitamin
+ぴたり - 
+ひとまず - for the present/once/in outline
+ひとりでに - by itself/automatically/naturally
+ビニール - vinyl
+ひゃっかじてん - encyclopedia
+ビルディング - building
+ピンク - pink
+ファスナー - fastener/zipper
+ふざける - to romp/to gambol/to frolic/to joke
+ぶつかる - to strike/to collide with
+ぶつける - to knock/to run into/to nail on/to strike hard/to hit and attack
+ぶつぶつ - grumbling/complaining in a small voice
+フライパン - fry pan/frying pan
+ブラウス - blouse
+ぶらさげる - to hang/to suspend/to dangle/to swing
+ブラシ - brushy/brush
+プラスチック - plastic
+プラットホーム - platform
+フリー - free
+プリント - print/handout
+ブローチ - brooch
+プログラム - program
+ふわふわ - light/soft
+へそ - navel/belly-button
+ベテラン - veteran
+ヘリコプター - helicopter
+へる - to decrease (in size or number)/to diminish/to abate
+ぺん - pen
+ペンチ - (abbr) pliers (lit: pinchers)
+ボーナス - bonus
+ポスター - poster
+ほどく - to unfasten
+ぼろ - rag/scrap/tattered clothes/fault (esp. in a pretense)
+まあまあ - so-so
+マイナス - minus
+まごまご - confused
+マスク - mask
+またぐ - to straddle
+まぶしい - dazzling/radiant
+まぶた - eyelids
+マフラー - muffler/scarf
+マラソン - marathon
+マンション - large apartment/apartment house
+みじめ - (arch) sad/pitiful/wretched
+ミシン - sewing machine
+みっともない - shameful/indecent
+メーター - meter (clock)
+めちゃくちゃ - absurd/unreasonable/excessive/messed up/spoiled/wreaked
+めっきり - remarkably
+めでたい - happy/simple soul/propitious/joyous
+メニュー - menu
+めまい - dizziness/giddiness
+モーター - motor
+もしかしたら - perhaps/maybe/by some chance
+もしかすると - perhaps/maybe/by some chance
+もたれる - to lean against/to lean on/to recline on/to lie heavy (on the stomach)
+モダン - modern
+もったいない - too good/more than one deserves/wasteful/sacrilegious/unworthy of
+モデル - model
+モノレール - monorail
+やかましい - noisy/strict/fussy
+やたらに - randomly/recklessly/blindly
+やっつける - to attack (an enemy)/to beat/to do away with/to finish off
+やっぱり - also/as I thought/still/in spite of/absolutely/of course
+やむをえない - cannot be helped/unavoidable
+ゆでる - to boil
+よこす - to send/to forward/to hand over (e.g. money)
+ラッシュアワー - rush hour
+ランチ - launch/lunch
+ランニング - running/tank top
+リズム - rhythm
+リットル - litre
+リボン - ribbon
+レインコート - raincoat
+レクリェーション - recreation
+レジャー - leisure
+レベル - level
+リポート - report/paper
+レンズ - lens
+ローマじ - romanization/Roman letters
+ロッカー - locker
+ロビー - lobby
+わりあいに - comparatively
+ワンピース - one-piece dress
+</jlpt>
+<jlpt1>
+あくどい - gaudy/showy/excessive/vicious
+あっさり - easily/readily/quickly
+あべこべ - contrary/opposite/inverse
+あやふや - uncertain/vague/ambiguous
+あら - oh/ah/saw-edged perch (Niphon spinosus)
+あられ - kind of cookie/cartoon character
+いく - to come/to orgasm
+いざ - now/come (now)/well/crucial moment
+いっそ - rather/sooner/might as well
+いやに - awfully/terribly
+うんざり - tedious/boring/being fed up with
+えい - ray (fish)
+おおい - hey!
+おっかない - frightening/huge
+おどおど - coweringly/hesitantly
+がっくり - heartbroken
+がっしり - firmly/solidly/tough
+がっちり - solidly built/tightly/shrewd/calculating
+がる - feel
+きちっと - exactly/perfectly
+きっかり - exactly/precisely
+きっちり - precisely/tightly
+きっぱり - clearly/plainly/distinctly
+くっきり - distinctly/clearly/boldly
+ぐっと - firmly/fast/much/more
+ぐらい - approximately
+けれど - but/however
+げっそり - being disheartened/losing weight
+こだわる - to fuss over/to be particular about/to be concerned about
+さっと - quickly/suddenly
+さん - Mr or Mrs
+し - 10^24 (kanji is JIS X 0212 kuten 4906)/septillion (American)/quadrillion (British)
+しいんと - silent (as the grave)/(deathly) quiet
+しくじる - to fail/to fall through/to blunder
+しぶとい - tenacious/stubborn
+しまった - Damn it!
+しょっちゅう - always/constantly
+じっくり - deliberately/carefully
+すばしこい - nimble/smart/quick
+すんなり - pass with no objection/slim/slender
+ずばり - decisively/decidedly/once and for all/unreservedly/frankly
+ずらっと - in a line/in a row
+ずるずる - sound or act of dragging/loose/inconclusive but unwanted situation/trailingly
+ずれ - gap/slippage
+ずれる - to slide/to slip off
+ぞんざい - rude/careless/slovenly
+たった - only/merely/but/no more than
+だぶだぶ - loose/baggy
+だらけ - implying (negatively) that something is full of  e.g. mistakes
+ちやほや - pamper/make a fuss of/spoil
+ちょくちょく - often/frequently/now and then/occasionally
+ちらっと - at a glance/by accident
+てっきり - surely/certainly/beyond doubt
+てんで - (not) at all/altogether/entirely
+でかい - huge
+と - if (conjunction)/promoted pawn (shogi) (abbr)
+とんだ - terrible/awful/serious/preposterous/absolutely not
+どうにか - in some way or other/one way or another
+どうやら - it seems like/somehow or other
+なんか - things like .../or something like that .. (often derogatory)
+なんだかんだ - something or other
+ばてる - to be exhausted/to be worn out
+ひょっと - possibly/accidentally
+びっしょり - wet through/drenched
+びり - last on the list/at the bottom
+ふんだん - plentiful/abundant/lavish
+ぶかぶか - too big/baggy
+ぶらぶら - dangle heavily/swing/sway to and fro/aimlessly/idly/lazily/loiter/loaf/be idle/stroll idly
+ぺこぺこ - fawn/be very hungry
+ほっと - feel relieved
+ぼつぼつ - gradually/here and there/spots/pimples
+ぼやく - to grumble/to complain
+ぼやける - to become dim/to become blurred
+まごつく - to be confused/to be flustered
+もろに - completely/all the way
+ややこしい - puzzling/tangled/complicated/complex
+ゆとり - reserve/affluence/room/time (to spare)
+アイデア - idea
+アクセル - accelerator
+アップ - up
+アプローチ - approach (in golf)
+アマチュア - amateur
+アラブ - Arab
+アルカリ - alkali
+アルミ - aluminum (Al)/aluminium
+アワー - hour
+アンケート - (fr:) (n) questionnaire (fr: enquete)/survey
+アンコール - encore
+イエス - Jesus/yes
+インターチェンジ - interchange
+インターナショナル - international
+インターフォン - intercom
+インテリ - egghead/intelligentsia
+インフォメーション - information
+インフレ - inflation
+ウェートレス - waitress
+エアメール - air mail
+エレガント - elegant
+エンジニア - engineer
+オーケー - OK
+オートマチック - automatic
+オープン - open
+オリエンテーション - orientation
+オレンジ - an orange
+オンライン - on-line
+カーペット - carpet
+カクテル - cocktail
+カット - cut/cutting
+カテゴリー - category
+カムバック - comeback
+カメラマン - cameraman
+カルテ - (de:) (n) clinical records (de: Karte)
+カンニング - cunning/cheat
+ガイド - tour guide
+ガイドブック - guidebook
+ガレージ - garage (at house)
+キャッチ - catch
+キャリア - career/career government employee
+クイズ - quiz
+クラブ - club/crab
+クレーン - crane
+グラフ - graph
+グレー - grey/gray
+ゲスト - guest
+コーナー - corner
+コマーシャル - a commercial
+コミュニケーション - communication
+コメント - comment
+コンタクト - contact/contact lens
+コンテスト - contest
+コントラスト - contrast
+コントロール - control
+コンパス - compass
+サイクル - cycle
+サイズ - size
+サボる - to be truant/to be idle/to sabotage by slowness
+サンキュー - thank you
+サンタクロース - Santa Claus
+シート - seat/sheet
+システム - system
+シック - chic
+シナリオ - scenario
+ショー - show
+ショック - shock
+ジーパン - jeans (lit: jeans pants)/dungarees
+ジャズ - jazz
+ジャンパー - jacket/jumper
+ジャンプ - jump
+ジャンボ - jumbo
+ジャンル - genre
+スタジオ - studio
+スチーム - steam
+ストライキ - strike
+ストレス - stress
+ストロー - straw
+ストロボ - stroboscope (lit: strobo)/strobe lamp/stroboscopic lamp
+スピード - speed
+スプリング - spring
+スペース - space
+スポーツカー - sports car
+スラックス - slacks
+セール - sale
+セクション - section
+セックス - sexual intercourse
+セレモニー - ceremony
+センス - good sense (for music  style  tact  etc.)
+ゼリー - jelly/Jerry
+ソース - source
+ソックス - socks
+ソロ - solo
+タイトル - title
+タイピスト - typist
+タイマー - timer
+タイミング - timing
+タイム - time
+タイムリー - timely/run-batted-in (baseball)/RBI
+タイヤ - tire/tyre
+タイル - tile
+タレント - talent/star/personality
+タワー - tower
+ダース - dozen
+ダウン - down
+ダブる - to coincide (fall on the same day)/to have two of something/to repeat a school year after failing
+ダンプ - dump
+チームワーク - teamwork
+チェンジ - change
+チャイム - chime
+チャンネル - a channel
+ティッシュペーパー - tissue paper
+テレックス - telex/teletypewriter exchange
+データ - data
+デコレーション - decoration
+デザート - dessert
+デザイン - design
+デッサン - (fr:) (n) rough sketch (fr: dessin)
+デモンストレーション - demonstration
+トーン - tone
+トラブル - trouble (sometimes used as a verb)
+トランジスター - transistor
+ドライ - dry
+ドライクリーニング - dry cleaning
+ドライバー - driver/screwdriver
+ドライブイン - drive in
+ドリル - drill
+ナイター - game under lights (e.g. baseball) (lit: nighter)/night game
+ナプキン - napkin
+ナンセンス - nonsense
+ニュー - new
+ニュアンス - nuance
+ネガ - (photographic) negative
+ノイローゼ - (de:) (n) neurosis (de: Neurose)
+ハンガー - hangar/(coat) hanger/hunger
+バー - bar
+バッジ - badge
+バット - bat/vat
+パジャマ - pajamas/pyjamas
+パチンコ - pachinko (Japanese pinball)
+パトカー - patrol car
+パンク - (abbr) puncture/bursting/punk
+ヒント - hint
+ビールス - virus
+ビジネス - business
+ファイト - fight
+ファイル - file
+ファン - fan/fun
+フィルター - (camera) filter
+フェリー - ferry
+フォーム - foam/form
+フロント - front
+ブーツ - boots
+ブーム - boom
+ブザー - buzzer
+ブルー - blue
+ベース - base/bass
+ベスト - best/vest
+ベストセラー - best-seller
+ペア - pair/pear
+ホース - hose
+ホール - hall/hole
+ボイコット - boycott
+ボルト - volt/bolt
+ポーズ - pause
+ポイント - point
+ポジション - position
+ポット - pot
+ポンプ - pump
+マーク - mark
+マスコミ - mass communication
+マッサージ - massage
+ミスプリント - misprint
+ミセス - Mrs.
+ミュージック - music
+ミリ - milli-/10^-3
+ムード - mood
+メーカー - maker
+メッセージ - message
+メディア - media
+メロディー - melody
+モーテル - motel
+モニター - (computer) monitor
+ヤング - young
+ユニーク - unique
+ユニフォーム - uniform
+ライス - rice
+ラベル - label
+ランプ - lamp/ramp/headlight/light
+ルーズ - loose
+ルール - rule
+レース - race/lace
+レギュラー - regular
+レクリエーション - recreation
+レッスン - lesson
+レディー - lady
+レバー - lever/liver
+レンジ - range/stove
+レンタカー - hire car (lit: rent-a-car)
+レントゲン - X-ray (lit: Roentgen)
+ロープ - rope
+ロマンチック - romantic
+ワット - watt
+</jlpt>
+
+To learn hiragana/katakana, go to [pavlukivan.github.io](http://pavlukivan.github.io/).
 */})],
 
 [['日', 'にち', 'じつ', 'じっ', 'か', 'ひ', 'す', 'に'], mcf2html(function(){/*
@@ -277,6 +1520,104 @@ Apparently にち is mostly used for "Japan/Japanese" meaning and days (also as 
 ひ is mostly used for days of the week and sun-related stuff
 じつ form is mostly unused (?), even though a lot of words *can* be written using that reading
 Notice the "mostly" - I don't think there are any exact rules here, these are just my observations and a lot of words don't "follow" these observations
+
+<jlpt5>
+明日 - あした - tomorrow
+一日 - いちにち - one day/first of month
+五日 - いつか - five days/fifth day
+一昨日 - おととい - day before yesterday
+火曜日 - かようび - Tuesday
+昨日 - きのう - yesterday
+今日 - きょう - today
+金曜日 - きんようび - Friday
+月曜日 - げつようび - Monday
+九日 - ここのか - nine days/ninth day
+水曜日 - すいようび - Wednesday
+誕生日 - たんじょうび - birthday
+一日 - ついたち - first of month
+十日 - とおか - ten days/the tenth day
+土曜日 - どようび - Saturday
+七日 - なのか - seven days/the seventh day
+日曜日 - にちようび - Sunday
+日曜日 - にちようび - Sunday
+二十日 - はつか - twenty days/twentieth
+二日 - ふつか - two days/second day of the month
+毎日 - まいにち - every day
+三日 - みっか - three days/third day of the month
+六日 - むいか - six days/sixth day of the month
+木曜日 - もくようび - Thursday
+八日 - ようか - eight days/eighth day of the month
+四日 - よっか - four days/fouth day of the month
+</jlpt>
+<jlpt4>
+明日 - あす・あした - tomorrow
+日記 - にっき - journal
+日 - ひ - day/sun
+</jlpt>
+<jlpt3>
+今日 - こんにち - today/this day
+先日 - せんじつ - the other day/a few days ago
+土曜/土曜日 - どよう/どようび - Saturday
+日 - にち - sun/sunshine/day
+日常 - にちじょう - ordinary/regular/everyday/usual
+日曜 - にちよう - Sunday
+日光 - にっこう - sunlight
+日中 - にっちゅう - daytime/broad daylight
+日本 - にっぽん・にほん - Japan
+日付 - ひづけ - date/dating
+明後日 - みょうごにち - day after tomorrow
+木曜/木曜日 - もくよう/もくようび - Thursday
+曜日 - ようび - day of the week
+</jlpt>
+<jlpt2>
+一昨日 - いっさくじつ - day before yesterday
+祭日 - さいじつ - national holiday/festival day
+祝日 - しゅくじつ - national holiday
+生年月日 - せいねんがっぴ - birth date
+月日 - つきひ - time/years/days
+定休日 - ていきゅうび - regular holiday
+当日 - とうじつ - appointed day/very day
+日時 - にちじ - date and time
+日用品 - にちようひん - daily necessities
+日課 - にっか - daily lesson/daily work/daily routine
+日程 - にってい - agenda
+日当たり - ひあたり - exposure to the sun/sunny place
+日帰り - ひがえり - day trip
+日陰 - ひかげ - shadow
+日日 - ひにち - every day/daily/day after day
+日日 - ひにち - every day/daily/day after day
+日の入り - ひのいり - sunset
+日の出 - ひので - sunrise
+平日 - へいじつ - weekday/ordinary days
+三日月 - みかづき - new moon/crescent moon
+夕日 - ゆうひ - (in) the evening sun/setting sun
+来日 - らいにち - arrival in Japan/coming to Japan/visit to Japan
+</jlpt>
+<jlpt1>
+悪日 - あくび - unlucky day
+明後日 - あさって - day after tomorrow
+一日 - いちじつ - one day/first of month
+日付 - かづけ - date/dating
+月日 - がっぴ - (the) date
+期日 - きじつ - fixed date/settlement date
+今日は - こんにちは - hello/good day (daytime greeting  id)
+一昨昨日 - さきおととい - two days before yesterday
+明々後日 - しあさって - two days after tomorrow
+終日 - しゅうじつ - all day
+七日 - なぬか - seven days/the seventh day (of the month)
+西日 - にしび - westering sun
+日夜 - にちや - day and night/always
+日当 - にっとう - daily allowance
+日頃 - ひごろ - normally/habitually
+日取り - ひどり - fixed date/appointed day
+日向 - ひなた - sunny place/in the sun
+日の丸 - ひのまる - the Japanese flag
+日々 - ひび - every day/daily/day after day
+日焼け - ひやけ - sunburn
+三日月 - みかずき - new moon/crescent moon
+連日 - れんじつ - every day/prolonged
+</jlpt>
+
 Radicals - 囗+一
 I guess you can remember it as 囗sun and a sun 一ray
 */})],
@@ -286,6 +1627,93 @@ I guess you can remember it as 囗sun and a sun 一ray
 Meaning - one
 The second most used kanji
 All the readings are relatively common: いち, いつ, ひと
+
+<jlpt5>
+一 - いち - one
+一日 - いちにち - one day/first of month
+一緒 - いっしょ - together
+一昨日 - おととい - day before yesterday
+一昨年 - おととし - year before last
+一日 - ついたち - first of month
+一つ - ひとつ - one
+一月 - ひとつき - one month
+一人 - ひとり - one person
+もう一度 - もういちど - again
+</jlpt>
+<jlpt4>
+一度 - いちど - once
+一生懸命 - いっしょうけんめい - with utmost effort
+</jlpt>
+<jlpt3>
+一時 - いちじ - moment/time
+一度に - いちどに - all at once
+一番 - いちばん - best/first/number one
+一家 - いっか - a house/a home/a family/a household
+一種 - いっしゅ - a species/a kind/a variety
+一瞬 - いっしゅん - a moment/an instant
+一生 - いっしょう - whole life/a lifetime/all through life
+一層 - いっそう - much more/still more/all the more
+一体 - いったい - one object/one body/what on earth?/really?/generally
+一致 - いっち - coincidence/agreement/conformity
+一般 - いっぱん - general/liberal/universal/ordinary/average
+一方 - いっぽう - on the other hand/meanwhile/only/simple/in turn
+同一 - どういつ - identity/sameness/similarity
+一言 - ひとこと - single word
+一人一人 - ひとりひとり - one by one/each/one at a time
+一人一人 - ひとりひとり - one by one/each/one at a time
+万一 - まんいち - by any chance
+唯一 - ゆいいつ - only/sole/unique
+</jlpt>
+<jlpt2>
+一応 - いちおう - once/tentatively/in outline/for the time being
+一段と - いちだんと - greater/more/further/still more
+一流 - いちりゅう - first class/top grade/foremost/top-notch
+一昨日 - いっさくじつ - day before yesterday
+一昨年 - いっさくねん - year before last
+一斉 - いっせい - simultaneous/all at once
+一旦 - いったん - once/for a moment/one morning/temporarily
+一定 - いってい - fixed/settled/definite
+統一 - とういつ - unity/consolidation/uniformity
+一通り - ひととおり - ordinary/usual/in general/briefly
+一休み - ひとやすみ - a rest
+</jlpt>
+<jlpt1>
+一々 - いちいち - one by one/separately
+一概に - いちがいに - unconditionally/as a rule
+一見 - いちげん - unfamiliar/never before met
+一言 - いちげん - single word
+一日 - いちじつ - one day/first of month
+一定 - いちじょう - fixed/settled/definite/uniform/regularized/defined/standardized/certain/prescribed
+一同 - いちどう - all present/all concerned/all of us
+一人 - いちにん - one person
+一部 - いちぶ - one copy  e.g. of a document/a part/partly/some
+一部分 - いちぶぶん - a part
+一別 - いちべつ - parting
+一面 - いちめん - one side/one phase/front page/the other hand/the whole surface
+一目 - いちもく - a glance/a look/a glimpse
+一様 - いちよう - uniformity/evenness/similarity/equality/impartiality
+一律 - いちりつ - evenness/uniformity/monotony/equality
+一連 - いちれん - a series/a chain/a ream (of paper)
+一括 - いっかつ - all together/batch/one lump/one bundle/summing up
+一気 - いっき - drink!(said repeatedly as a party cheer)
+一挙に - いっきょに - at a stroke/with a single swoop
+一切 - いっさい - all/everything/without exception/the whole/entirely/absolutely
+一心 - いっしん - one mind/wholeheartedness/the whole heart
+一帯 - いったい - a region/a zone/the whole place
+一敗 - いっぱい - one defeat
+一変 - いっぺん - complete change/about-face
+一昨昨日 - さきおととい - two days before yesterday
+単一 - たんいつ - single/simple/sole/individual/unitory
+第一 - だいいち - first/foremost/# 1
+一寸 - ちょっと - (ateji) (adv int) (uk) just a minute/a short time/a while/just a little/somewhat/easily/readily/rath
+一向 - ひたすら - earnestly
+一息 - ひといき - puffy/a breath/a pause/an effort
+一頃 - ひところ - once/some time ago
+一筋 - ひとすき - a line/earnestly/blindly/straightforwardly
+一まず - ひとまず - for the present/once/in outline
+一人でに - ひとりでに - by itself/automatically/naturally
+</jlpt>
+
 It's easy to remember because it's *one* line as opposed to 二 (meaning - 2) or 三 (meaning - 3)
 */})],
 
@@ -299,6 +1727,86 @@ The most used readings are じん, にん, ひと, り
 ひと is used as a person counter (10人 - 10ひと - 10 people)
 じん is used as a suffix to display one's relation to the word (example - 日本人 - にほん**じん** - a Japanese person)
 
+<jlpt5>
+大人 - おとな - adult
+外国人 - がいこくじん - foreigner
+人 - ひと - person
+一人 - ひとり - one person
+二人 - ふたり - two people
+</jlpt>
+<jlpt4>
+御主人 - ごしゅじん - (honorable) your husband
+人口 - じんこう - population
+人形 - にんぎょう - doll/figure
+</jlpt>
+<jlpt3>
+男の人 - おとこのひと - man
+恋人 - こいびと - lover/sweetheart
+個人 - こじん - individual/private person/personal/private
+詩人 - しじん - poet
+商人 - しょうにん - trader/shopkeeper/merchant
+人工 - じんこう - artificial/manmade/human work/human skill/artificiality
+人種 - じんしゅ - race (of people)
+人生 - じんせい - (human) life (i.e. conception to death)
+人物 - じんぶつ - character/personality/person/man/personage/talented man
+人類 - じんるい - mankind/humanity
+成人 - せいじん - adult
+他人 - たにん - another person/unrelated person/outsider/stranger
+人気 - にんき - popularity
+人間 - にんげん - human being/man/person
+犯人 - はんにん - offender/criminal
+美人 - びじん - beautiful person (woman)
+人込み - ひとごみ - crowd of people
+一人一人 - ひとりひとり - one by one/each/one at a time
+一人一人 - ひとりひとり - one by one/each/one at a time
+夫人 - ふじん - wife/Mrs/madam
+婦人 - ふじん - woman/female
+本人 - ほんにん - the person himself
+名人 - めいじん - master/expert
+友人 - ゆうじん - friend
+老人 - ろうじん - the aged/old person
+</jlpt>
+<jlpt2>
+女の人 - おんなのひと - woman
+職人 - しょくにん - worker/mechanic/artisan/craftsman
+素人 - しろうと - amateur/novice
+人造 - じんぞう - man-made/synthetic/artificial
+人文科学 - じんぶんかがく - social sciences/humanities
+人命 - じんめい - (human) life
+知人 - ちじん - friend/acquaintance
+人差指 - ひとさしゆび - index finger
+人通り - ひとどおり - pedestrian traffic
+役人 - やくにん - government official
+</jlpt>
+<jlpt1>
+商人 - あきうど - trader/shopkeeper/merchant
+他人 - あだびと - another person/unrelated person/outsider/stranger
+一人 - いちにん - one person
+大人しい - おとなしい - obedient/docile/quiet
+玄人 - くろうと - expert/professional/geisha/prostitute
+故人 - こじん - the deceased/old friend
+殺人 - さつじん - murder
+産婦人科 - さんふじんか - maternity and gynecology department
+主人公 - しゅじんこう - protagonist/main character/hero(ine) (of a story)/head of household
+証人 - しょうにん - witness
+使用人 - しようにん - employee/servant
+新人 - しんじん - new face/newcomer
+人 - じん - man/person/people
+人格 - じんかく - personality/character/individuality
+人材 - じんざい - man of talent
+人体 - じんたい - human body
+人民 - じんみん - people/public
+人目 - じんもく - glimpse/public gaze
+仲人 - ちゅうにん - go-between/matchmaker
+当人 - とうにん - the one concerned/the said person
+二人 - ににん - two persons/two people/pair/couple
+人情 - にんじょう - humanity/empathy/kindness/sympathy/human nature/common sense/customs and manners
+万人 - ばんじん - all people/everybody/10000 people
+人柄 - ひとがら - personality/character/personal appearance/gentility
+人質 - ひとじち - hostage/prisoner
+一人でに - ひとりでに - by itself/automatically/naturally
+</jlpt>
+
 It kinda looks like a human, I guess?
 */})],
 
@@ -308,12 +1816,133 @@ Meaning - year
 The only used reading is ねん
 Used as a year counter 
 
+<jlpt5>
+一昨年 - おととし - year before last
+去年 - きょねん - last year
+今年 - ことし - this year
+さ来年 - さらいねん - year after next
+年 - とし - year
+毎年 - まいねん/まいとし - every year
+万年筆 - まんねんひつ - fountain pen
+来年 - らいねん - next year
+</jlpt>
+<jlpt3>
+少年 - しょうねん - boys/juveniles
+青年 - せいねん - youth/young man
+年月 - としつき(ねんげつ） - months and years
+年寄 - としより - old people/the aged
+年間 - ねんかん - year
+年月 - ねんげつ - months and years
+年中 - ねんじゅう - whole year/always/everyday
+年代 - ねんだい - age/era/period/date
+年齢 - ねんれい - age/years
+</jlpt>
+<jlpt2>
+一昨年 - いっさくねん - year before last
+学年 - がくねん - year in school/grade in school
+再来年 - さらいねん - year after next
+青少年 - せいしょうねん - youth/young person
+生年月日 - せいねんがっぴ - birth date
+中年 - ちゅうねん - middle-aged
+年度 - ねんど - year/fiscal year/school year/term
+</jlpt>
+<jlpt1>
+同い年 - おないどし - of the same age
+元年 - がんねん - first year (of a specific reign)
+成年 - せいねん - majority/adult age
+定年 - ていねん - retirement age
+年頃 - としごろ - age/marriageable age/age of puberty/adolescence/for some years
+年寄り - としより - old people/the aged
+年鑑 - ねんかん - yearbook
+年号 - ねんごう - name of an era/year number
+年生 - ねんせい - pupil in .... year/student in .... year
+年長 - ねんちょう - seniority
+年輪 - ねんりん - annual tree ring
+</jlpt>
+
 Radicals: 𠂉㐄
 */})],
 
 [['大 ', 'だ', 'た', 'おお', 'たい', 'だい'], mcf2html(function(){/*
 #大
 Meaning - big/large/very/university
+
+<jlpt5>
+大きい - おおきい - big
+大きな - おおきな - big
+大勢 - おおぜい - great number of people
+大人 - おとな - adult
+大学 - だいがく - university
+大使館 - たいしかん - embassy
+大丈夫 - だいじょうぶ - all right
+大好き - だいすき - to be very likeable
+大切 - たいせつ - important
+</jlpt>
+<jlpt4>
+大学生 - だいがくせい - university student
+大事 - だいじ - important/valuable/serious matter
+大体 - だいたい - generally
+大分 - だいぶ - greatly
+</jlpt>
+<jlpt3>
+偉大 - いだい - greatness
+大いに - おおいに - very/much/greatly
+大家 - おおや - rich family/distinguished family
+拡大 - かくだい - magnification/enlargement
+巨大 - きょだい - huge/gigantic/enormous
+重大 - じゅうだい - serious/important/grave/weighty
+大会 - たいかい - convention/tournament/mass meeting/rally
+大気 - たいき - the air/atmosphere
+大使 - たいし - ambassador
+大した - たいした - considerable/great/important/significant/a big deal
+大臣 - だいじん - cabinet minister
+大戦 - たいせん - great war/great battle
+大抵 - たいてい - usually/generally
+大統領 - だいとうりょう - president/chief executive
+大半 - たいはん - majority/mostly/generally
+大部分 - だいぶぶん - most part/greater part/majority
+大変 - たいへん - awful/dreadful/terrible/very
+大陸 - たいりく - continent
+莫大 - ばくだい - enormous/vast
+</jlpt>
+<jlpt2>
+大通り - おおどおり - main street
+大凡 - おおよそ - about/roughly/as a rule/approximately
+増大 - ぞうだい - enlargement
+総理大臣 - そうりだいじん - Prime Minister
+大学院 - だいがくいん - graduate school
+大工 - だいく - carpenter
+大して - たいして - (not so) much/(not) very
+大小 - だいしょう - size
+大層 - たいそう - very much/exaggerated/very fine
+大分 - だいぶん - considerably/greatly/a lot
+大木 - たいぼく - large tree
+膨大 - ぼうだい - huge/bulky/enormous/extensive/swelling/expansion
+</jlpt>
+<jlpt1>
+大方 - おおかた - perhaps/almost all/majority
+大柄 - おおがら - large build/large pattern
+大げさ - おおげさ - grandiose/exaggerated
+大事 - おおごと - important/valuable/serious matter
+大ざっぱ - おおざっぱ - rough (as in not precise)/broad/sketchy
+大筋 - おおすじ - outline/summary
+大空 - おおぞら - heaven/firmament/the sky
+大幅 - おおはば - full width/large scale/drastic
+大水 - おおみず - flood
+お大事に - おだいじに - Take care of yourself
+大人しい - おとなしい - obedient/docile/quiet
+盛大 - せいだい - grand/prosperous/magnificent
+壮大 - そうだい - magnificent/grand/majestic/splendid
+大概 - たいがい - in general/mainly
+大金 - たいきん - great cost
+大衆 - たいしゅう - general public
+大部 - たいぶ - most (e.g. most part)/greater/fairly/a good deal/much
+短大 - たんだい - junior college
+大胆 - だいたん - bold/daring/audacious
+大便 - だいべん - feces/excrement/shit
+長大 - ちょうだい - very long/great length
+</jlpt>
+
 Readings -　た/だ/たい/だい and おお
 */})],
 
@@ -330,6 +1959,28 @@ The only place where と reading is used is a saying - 十人十色 - じゅう�
 十角形 - じっかくけい - decagon (also 二十角形 - icosagon and the like)
 十進 - じっしん - decimal
 The rest of the words use じゅう (although different readings might exist for some words, the meaning shouldn't change)
+
+<jlpt5>
+十 - じゅう  とお - ten
+十日 - とおか - ten days/the tenth day
+二十歳 - はたち - 20 years old/20th year
+二十日 - はつか - twenty days/twentieth
+</jlpt>
+<jlpt4>
+十分 - じゅうぶん - enough
+</jlpt>
+<jlpt3>
+十 - じゅう - 10/ten
+十 - とお - 10/ten
+二十（歳） - はたち - 20 years old/
+</jlpt>
+<jlpt2>
+五十音 - ごじゅうおん - the Japanese syllabary
+</jlpt>
+<jlpt1>
+十分 - じっぷん - 10 minutes
+十字路 - じゅうじろ - crossroads
+</jlpt>
 */})],
 
 [['二', 'に', 'ふ', 'ふた', 'じ'], mcf2html(function(){/*
@@ -347,6 +1998,26 @@ Words with ふた reading:
 二股膏薬 - ふたまたこうやく - double-dealer/moving between two sides in conflict
 二見 - ふたみ - forked/split (road/river)
 じ reading is used in 不二 - ふじ - "2 sides of the same coin" and names
+
+<jlpt5>
+二 - に - two
+二十歳 - はたち - 20 years old/20th year
+二十日 - はつか - twenty days/twentieth
+二つ - ふたつ - two
+二人 - ふたり - two people
+二日 - ふつか - two days/second day of the month
+</jlpt>
+<jlpt4>
+二階建て - にかいだて - two storied
+</jlpt>
+<jlpt3>
+二十（歳） - はたち - 20 years old/
+</jlpt>
+<jlpt1>
+二人 - ににん - two persons/two people/pair/couple
+真っ二つ - まっぷたつ - in two equal parts
+</jlpt>
+
 Just like 一 - one and 三 - three it's easy to remember - 二 - two
 */})],
 
@@ -362,7 +2033,43 @@ Words with もと reading:
 本 - もと - root/origin
 山本　- やまもと - mountain base
 Counter for blades of grass, tree trunks and falcons
-Used in 日本 - にほん - Japan 
+Used in 日本 - にほん - Japan
+
+<jlpt5>
+本 - ほん - book
+本棚 - ほんだな - bookshelves
+</jlpt>
+<jlpt3>
+基本 - きほん - foundation/basis/standard
+資本 - しほん - funds/capital
+日本 - にっぽん・にほん - Japan
+本当 - ほんとう・ほんと - truth/reality
+本人 - ほんにん - the person himself
+本物 - ほんもの - genuine article
+</jlpt>
+<jlpt2>
+標本 - ひょうほん - example/specimen
+本部 - ほんぶ - headquarters
+本来 - ほんらい - essentially/naturally/by nature
+見本 - みほん - sample
+</jlpt>
+<jlpt1>
+脚本 - きゃくほん - scenario
+根本 - こんぽん - origin/source/foundation/root/base/principle
+台本 - だいほん - libretto/scenario
+手本 - てほん - model/pattern
+本格 - ほんかく - propriety/fundamental rules
+本館 - ほんかん - main building
+本気 - ほんき - seriousness/truth/sanctity
+本質 - ほんしつ - essence/true nature/reality
+本体 - ほんたい - substance/real form/object of worship
+本音 - ほんね - real intention/motive
+本の - ほんの - mere/only/just
+本能 - ほんのう - instinct
+本場 - ほんば - home/habitat/center/best place/genuine
+本文 - ほんぶん - text (of document)/body (of letter)
+本名 - ほんみょう - real name
+</jlpt>
 */})],
 
 [['中', 'ちゅう', 'なか', 'うち'], mcf2html(function(){/*
@@ -374,6 +2081,65 @@ The reading depends on the word meaning:
 なか - inside
 ちゅう - within
 じゅう - throughout
+
+<jlpt5>
+中 - なか - middle
+</jlpt>
+<jlpt4>
+背中 - せなか - back of the body
+中学校 - ちゅうがっこう - junior high school/middle school
+途中 - とちゅう - on the way
+真中 - まんなか - middle
+</jlpt>
+<jlpt3>
+最中 - さいちゅう - in the middle of
+集中 - しゅうちゅう - concentration/focusing the mind
+中 - ちゅう - inside/middle/among
+中央 - ちゅうおう - centre/central/center/middle
+中学 - ちゅうがく - middle school/junior high school
+中古 - ちゅうこ - used/second-hand/old
+中止 - ちゅうし - suspension/stoppage/discontinuance/interruption
+中心 - ちゅうしん - center/core/heart/pivot/emphasis/balance
+日中 - にっちゅう - daytime/broad daylight
+熱中する - ねっちゅうする - to devote oneself/be devoted to/be crazy about
+年中 - ねんじゅう - whole year/always/everyday
+夢中 - むちゅう - daze/(in a) trance/ecstasy/delirium/engrossment
+夜中 - よなか - midnight/dead of night
+世の中 - よのなか - society/the world/the times
+</jlpt>
+<jlpt2>
+御中 - おんちゅう - and Company/Messrs.
+空中 - くうちゅう - sky/air
+中間 - ちゅうかん - middle/midway/interim
+中旬 - ちゅうじゅん - second third of a month
+中世 - ちゅうせい - Middle Ages/mediaeval times
+中性 - ちゅうせい - neuter gender/neutral (chem.)/indifference/sterility
+中途 - ちゅうと - in the middle/half-way
+中年 - ちゅうねん - middle-aged
+中身 - なかみ - contents/interior/substance/filling/(sword) blade
+中味 - なかみ - contents/interior/substance/filling/(sword) blade
+中指 - なかゆび - middle finger
+話中 - はなしちゅう - while talking/the line is busy
+</jlpt>
+<jlpt1>
+心中 - しんじゅう - double suicide/lovers suicide
+中継 - ちゅうけい - relay/hook-up
+中指 - ちゅうし - middle finger
+中傷 - ちゅうしょう - slander/libel/defamation
+中枢 - ちゅうすう - centre/pivot/mainstay/nucleus/backbone/central figure/pillar/key man
+中断 - ちゅうだん - interruption/suspension/break
+中腹 - ちゅうっぱら - irritated/offended
+中毒 - ちゅうどく - poisoning
+中立 - ちゅうりつ - neutrality
+中和 - ちゅうわ - neutralize/counteract
+途中 - つちゅう - on the way/en route
+中程 - なかほど - middle/midway
+真ん中 - まんなか - middle/centre/mid-way
+命中 - めいちゅう - a hit
+夜中 - やちゅう - all night/the whole night
+連中 - れんじゅう - colleagues/company/a lot
+</jlpt>
+
 You can remember it as a 丨line going through a 口rectangle
 */})],
 
@@ -384,6 +2150,94 @@ Most common readings: しゅつ, で, だ
 Words using い reading:
 お出で - おいで - to come/go/be (somewhere)/stay (honorific)
 見出だす (also written as 見出す) - みいだす - to find out
+
+<jlpt5>
+出す - だす - to put out
+出かける - でかける - to go out
+出口 - でぐち - exit
+出る - でる - to appear/to leave
+</jlpt>
+<jlpt4>
+思い出す - おもいだす - to remember
+引き出し - ひきだし - drawer/drawing out
+降り出す - ふりだす - to start to rain
+</jlpt>
+<jlpt3>
+思い出 - おもいで - memories/recollections/reminiscence
+外出 - がいしゅつ - outing/going out
+支出 - ししゅつ - expenditure/expenses
+出身 - しゅっしん - graduate from/come from
+出席 - しゅっせき・する - attendance/presence/to attend
+出発 - しゅっぱつ・する - departure/to depart
+出版 - しゅっぱん - publication
+出会い - であい - meeting/rendezvous/encounter
+出会う - であう - to meet by chance/to come across/to happen to encounter
+提出 - ていしゅつ - presentation/submission/filing
+出来事 - できごと - incident/affair/happening/event
+出来るだけ - できるだけ - as (much) (soon)  as possible
+飛び出す - とびだす - to jump out/to rush out/to fly out
+輸出 - ゆしゅつ・する - export/to export
+</jlpt>
+<jlpt2>
+言い出す - いいだす - to start talking/to speak/to tell/to propose/to suggest/to break the ice
+お出掛け - おでかけ - 
+貸し出し - かしだし - lending/loaning
+出勤 - しゅっきん - going to work/at work
+出張 - しゅっちょう - official tour/business trip
+出合い - であい - an encounter
+出入り - でいり - in and out/coming and going/free association/income and expenditure/debits and credit
+出入口 - でいりぐち - exit and entrance
+出掛ける - でかける - to depart/to set out/to start/to be going out
+出来上がり - できあがり - be finished/ready/made for/cut out
+出来上がる - できあがる - to be finished/to be ready/by definition/to be very drunk
+出迎え - でむかえ - meeting/reception
+出迎える - でむかえる - to meet/to greet
+取り出す - とりだす - to take out/to produce/to pick out
+引出す - ひきだす - to pull out/to take out/to draw out/to withdraw
+日の出 - ひので - sunrise
+見出し - みだし - heading/caption/subtitle/index
+呼び出す - よびだす - to summon/to call (e.g. phone)
+</jlpt>
+<jlpt1>
+家出 - いえで - running away from home/leaving home
+売り出し - うりだし - (bargain) sale
+売り出す - うりだす - to put on sale/to market/to become popular
+演出 - えんしゅつ - production (e.g. play)/direction
+追い出す - おいだす - to expel/to drive out
+お出でになる - おいでになる - to be
+お目出度う - おめでとう - (ateji) (int) (uk) Congratulations!/an auspicious occasion!
+差し出す - さしだす - to present/to submit/to tender/to hold out
+産出 - さんしゅつ - yield/produce
+出血 - しゅっけつ - bleeding/haemorrhage
+出産 - しゅっさん - (child)birth/delivery/production (of goods)
+出社 - しゅっしゃ - arrival (in a country  at work  etc.)
+出生 - しゅっしょう - birth
+出世 - しゅっせ - promotion/successful career/eminence
+出費 - しゅっぴ - expenses/disbursements
+出品 - しゅっぴん - exhibit/display
+出演 - しゅつえん - performance/stage appearance
+出題 - しゅつだい - proposing a question
+出動 - しゅつどう - sailing/marching/going out
+進出 - しんしゅつ - advance/step forward
+脱出 - だっしゅつ - escape
+出合う - であう - to meet by chance/to come across/to happen to encounter/to hold a rendezvous/to have a date
+出入り口 - でいりぐち - exit and entrance
+出来物 - できもの - able man/tumour/growth/boil/ulcer/abcess/rash/pimple
+出切る - できる - to be out of/to have no more at hand
+出くわす - でくわす - to happen to meet/to come across
+出鱈目 - でたらめ - irresponsible utterance/nonsense/nonsensical/random/haphazard/unsystematic
+出直し - でなおし - adjustment/touch up
+投げ出す - なげだす - to throw down/to abandon/to sacrifice/to throw out
+逃げ出す - にげだす - to run away/to escape from
+抜け出す - ぬけだす - to slip out/to sneak away/to excel
+振り出し - ふりだし - outset/starting point/drawing or issuing (draft)
+噴出 - ふんしゅつ - spewing/gushing/spouting/eruption/effusion
+放出 - ほうしゅつ - release/emit
+放り出す - ほうりだす - to throw out/to fire/to expel/to give up/to abandon/to neglect
+申出 - もうしで - proposal/request/claim/report/notice
+申し出る - もうしでる - to report to/to tell/to suggest/to submit/to request/to make an offer/to come forward with informati
+</jlpt>
+
 Just look at this kanji - it looks like it really wants to go up.
 */})],
 
@@ -395,6 +2249,23 @@ The only words using み reading:
 三つ編み - みつあみ - braid/plait
 三日月 - みかづき - crescent moon
 三十路 - みそじ - one's thirties (age)
+
+<jlpt5>
+三 - さん - three
+三日 - みっか - three days/third day of the month
+三つ - みっつ - three
+</jlpt>
+<jlpt2>
+再三 - さいさん - again and again/repeatedly
+三角 - さんかく - triangle/triangular
+三日月 - みかづき - new moon/crescent moon
+</jlpt>
+<jlpt1>
+三味線 - さみせん - three-stringed Japanese guitar/shamisen
+三 - み - (num) three
+三日月 - みかずき - new moon/crescent moon
+</jlpt>
+
 Just as 一 - one and 二 - two, 三 - three is very easy to remember.
 */})],
 
@@ -404,6 +2275,70 @@ Meaning - to look/the look (of something)/a view (e.g. out of the window)/to see
 Reading: み and けん
 けん is generally used in the "point of view/opinion" meaning
 み is used for everything eye-related
+
+<jlpt5>
+見せる - みせる - to show
+見る  観る - みる - to see/to watch
+</jlpt>
+<jlpt4>
+意見 - いけん - opinion
+お見舞い - おみまい - calling on someone who is ill/enquiry
+見物 - けんぶつ - sightseeing
+拝見 - はいけん・する - (humble) to look at
+花見 - はなみ - cherry-blossom viewing
+見える - みえる - to be in sight
+見つかる - みつかる - to be discovered
+見つける - みつける - to discover
+</jlpt>
+<jlpt3>
+見解 - けんかい - opinion/point of view
+見当 - けんとう - be found/aim/estimate/guess/approx
+発見 - はっけん - discovery/detection/finding
+見送り - みおくり - seeing one off/farewell/escort
+見事 - みごと - splendid/magnificent/beautiful/admirable
+見舞い - みまい - enquiry/expression of sympathy/expression of concern
+</jlpt>
+<jlpt2>
+見学 - けんがく - inspection/study by observation/field trip
+拝見 - はいけん - (hum) (pol) seeing/look at
+見送る - みおくる - to see off/to farewell/to escort/to let pass
+見下ろす - みおろす - to overlook/to command a view of/to look down on something
+見掛け - みかけ - outward appearance
+見出し - みだし - heading/caption/subtitle/index
+見付かる - みつかる - to be found/to be discovered
+見付ける - みつける - to be familiar/to discover/to detect
+見直す - みなおす - to look again/to get a better opinion of
+見慣れる - みなれる - to become used to seeing/to be familiar with
+見本 - みほん - sample
+見舞う - みまう - to ask after (health)/to visit
+</jlpt>
+<jlpt1>
+異見 - いけん - different opinion/objection
+一見 - いちげん - unfamiliar/never before met
+会見 - かいけん - interview/audience
+見地 - けんち - point of view
+偏見 - へんけん - prejudice/narrow view
+見合い - みあい - formal marriage interview
+見合わせる - みあわせる - to exchange glances/to postpone/to suspend operations/to refrain from performing an action
+見落とす - みおとす - to overlook/to fail to notice
+見掛ける - みかける - to (happen to) see/to notice/to catch sight of
+見方 - みかた - viewpoint
+見苦しい - みぐるしい - unsightly/ugly
+見込み - みこみ - hope/prospects/expectation
+見すぼらしい - みすぼらしい - shabby/seedy
+見せびらかす - みせびらかす - to show off/to flaunt
+見せ物 - みせもの - show/exhibition
+見っともない - みっともない - shameful/indecent
+見積り - みつもり - estimation/quotation
+見通し - みとおし - perspective/unobstructed view/outlook/forecast/prospect/insight
+見逃す - みのがす - to miss/to overlook/to leave at large
+見晴らし - みはらし - view
+見舞 - みまい - enquiry/expression of sympathy/expression of concern
+見渡す - みわたす - to look out over/to survey (scene)/to take an extensive view of
+目論見 - もくろみ - a plan/a scheme/a project/a program/intention/goal
+余所見 - よそみ - looking away/looking aside
+</jlpt>
+
 Looks like a torn out eye with the nerves facing down
 */})],
 
@@ -414,6 +2349,45 @@ Readings - げつ, つき, がつ
 がつ is used as a "month of the year" suffix (Example: 三月 - さんがつ - March (3rd month))
 げつ is used in most other cases
 つき is a poetic reading, also used for lunar months
+
+<jlpt5>
+月曜日 - げつようび - Monday
+今月 - こんげつ - this month
+先月 - せんげつ - last month
+一月 - ひとつき - one month
+毎月 - まいげつ/まいつき - every month
+来月 - らいげつ - next month
+</jlpt>
+<jlpt4>
+さ来月 - さらいげつ - the month after next
+</jlpt>
+<jlpt3>
+月曜 - げつよう・げつようび - Monday
+月 - つき - moon/month
+年月 - としつき(ねんげつ） - months and years
+年月 - ねんげつ - months and years
+</jlpt>
+<jlpt2>
+月給 - げっきゅう - monthly salary
+月末 - げつまつ - end of the month
+再来月 - さらいげつ - month after next
+生年月日 - せいねんがっぴ - birth date
+先々月 - せんせんげつ - month before last
+月日 - つきひ - time/years/days
+三日月 - みかづき - new moon/crescent moon
+</jlpt>
+<jlpt1>
+五月蝿い - うるさい - noisy/loud/fussy
+ヶ月 - かげつ - #NAME?
+月日 - がっぴ - (the) date
+月謝 - げっしゃ - monthly tuition fee
+月賦 - げっぷ - monthly installment
+先先月 - せんせんげつ - month before last
+月並み - つきなみ - every month/common
+満月 - まんげつ - full moon
+三日月 - みかずき - new moon/crescent moon
+</jlpt>
+
 It looks like sun/day kanji 日, but with "legs"
 */})],
 
@@ -426,6 +2400,75 @@ You will mostly (if not ever) only need せい and しょう though
 なま is used as a prefix meaning "live" (e.g. performance), fresh/draft or unprocessed
 せい is used as a suffix meaning "student" (e.g. 一回生 - いっかいせい - first grade student) or "born in" (e.g. 1990年**生** - born in 1990)
 しょう is almost exclusively used in "life" meaning, the most common reading is せい
+
+<jlpt5>
+生まれる - うまれる - to be born
+学生 - がくせい - student
+生徒 - せいと - pupil
+先生 - せんせい - teacher/doctor
+誕生日 - たんじょうび - birthday
+留学生 - りゅうがくせい - overseas student
+</jlpt>
+<jlpt4>
+生きる - いきる - to live
+一生懸命 - いっしょうけんめい - with utmost effort
+高校生 - こうこうせい - high school student
+生活 - せいかつ・する - to live
+生産 - せいさん・する - to produce
+大学生 - だいがくせい - university student
+</jlpt>
+<jlpt3>
+生き物 - いきもの - living thing/animal
+一生 - いっしょう - whole life/a lifetime/all through life
+生まれ - うまれ - birth/birth-place
+生地 - きじ - birthplace
+芝生 - しばふ - lawn
+生じる - しょうじる - to produce/to yield/to result from/to arise/to be generated
+人生 - じんせい - (human) life (i.e. conception to death)
+生産 - せいさん - production/manufacture
+生物 - せいぶつ - raw food
+生命 - せいめい - life/existence
+誕生 - たんじょう - birth
+生 - なま - draft (beer)/raw/unprocessed
+生 - なま - draft (beer)/raw/unprocessed
+</jlpt>
+<jlpt2>
+生き生き - いきいき - vividly/lively
+生き生き - いきいき - vividly/lively
+生け花 - いけばな - flower arrangement
+写生 - しゃせい - sketching/drawing from nature
+小学生 - しょうがくせい - grade school student
+生ずる - しょうずる - to cause/to arise/to be generated
+生存 - せいぞん - existence/being/survival
+生長 - せいちょう - growth/increment
+生年月日 - せいねんがっぴ - birth date
+生意気 - なまいき - impertinent/saucy/cheeky/conceit/audacious/brazen
+生る - なる - to bear fruit
+生える - はえる - to grow/to spring up/to cut (teeth)
+</jlpt>
+<jlpt1>
+生かす - いかす - to revive/to resuscitate/to make use of
+生まれつき - うまれつき - by nature/by birth/native
+衛生 - えいせい - health/hygiene/sanitation/medical
+生 - き - pure/undiluted/raw/crude
+生真面目 - きまじめ - too serious/person who is too serious/honesty/sincerity
+再生 - さいせい - playback/regeneration/resuscitation/return to life/rebirth/reincarnation/narrow escape/reclamation/r
+出生 - しゅっしょう - birth
+新入生 - しんにゅうせい - freshman/first-year student
+生育 - せいいく - growth/development/breeding
+生計 - せいけい - livelihood/living
+生死 - せいし - life and death
+生理 - せいり - physiology/menses
+畜生 - ちくしょう - beast/brute/damn
+生臭い - なまぐさい - smelling of fish or blood/fish or meat
+生温い - なまぬるい - lukewarm/halfhearted
+生身 - なまみ - living flesh/flesh and blood/the quick
+年生 - ねんせい - pupil in .... year/student in .... year
+発生 - はっせい - outbreak/spring forth/occurrence/incidence/origin
+生やす - はやす - to grow/to cultivate/to wear beard
+野生 - やせい - wild
+</jlpt>
+
 Radicals: 𠂉土
 */})],
 
@@ -434,6 +2477,20 @@ Radicals: 𠂉土
 Meaning - five
 There are two readings, the common one is ご
 The only word using い reading is 五つ - いつ - 5 things
+
+<jlpt5>
+五日 - いつか - five days/fifth day
+五つ - いつつ - five
+五 - ご - five
+</jlpt>
+<jlpt2>
+五十音 - ごじゅうおん - the Japanese syllabary
+四捨五入 - ししゃごにゅう - rounding up (fractions)
+</jlpt>
+<jlpt1>
+五月蝿い - うるさい - noisy/loud/fussy
+</jlpt>
+
 Looks like 5 with one long line that is too long (Or you can try to remember it as "not 6"  but it might be confusing)
 */})],
 
@@ -442,17 +2499,95 @@ Looks like 5 with one long line that is too long (Or you can try to remember it 
 Meaning above/top/surface/earlier/limit/climb/rise/raise/offer/etc
 The most common readings - じょう, あ and うえ
 Rare readings - うわ, かみ, しゅう, のぼ
-Notable words:
-上げる - あげる - to raise
-上がる - あがる - to rise
-上る - のぼる - to ascend
-上す/のぼせる - のぼす/のぼせる - to raise/record/bring up
+
+<jlpt5>
+上げる - あげる - to give
+上 - うえ - on top of
+上着 - うわぎ - jacket
+上手 - じょうず - skillful
+</jlpt>
+<jlpt4>
+上る - あがる - to rise
+以上 - いじょう - more than/this is all
+屋上 - おくじょう - rooftop
+差し上げる - さしあげる - (polite) to give
+召し上がる - めしあがる - (polite) to eat
+申し上げる - もうしあげる - (humble) to say/to tell
+</jlpt>
+<jlpt3>
+上 - かみ - first volume/superior quality/governmental
+上 - じょう - first volume/superior quality/
+上京 - じょうきょう - proceeding to the capital (Tokyo)
+上達 - じょうたつ - improvement/advance/progress
+上等 - じょうとう - superiority/first class/very good
+立ち上がる - たちあがる - to stand up
+頂上 - ちょうじょう - top/summit/peak
+取り上げる - とりあげる - to take up/to pick up/to disqualify/to confiscate/to deprive
+持ち上げる - もちあげる - to raise/to lift up/to flatter
+</jlpt>
+<jlpt2>
+売上 - うりあげ - amount sold/proceeds
+仕上がる - しあがる - to be finished
+上級 - じょうきゅう - advanced level/high grade/senior
+上下 - じょうげ - high and low/up and down/unloading and loading/praising and blaming
+上旬 - じょうじゅん - first 10 days of month
+出来上がり - できあがり - be finished/ready/made for/cut out
+出来上がる - できあがる - to be finished/to be ready/by definition/to be very drunk
+上り - のぼり - up-train (going to Tokyo)/ascent
+上る - のぼる - to ascend/to go up/to climb
+目上 - めうえ - superior(s)/senior
+</jlpt>
+<jlpt1>
+上がり - あがり - slope/advance income/crop yield/ascent/rise/advance/death/spinning/completion/stop/finish/after
+上がる - あがる - to enter/to go up/to rise/to climb up/to advance/to appreciate/to be promoted/to improve/to call on/
+上下 - うえした - high and low/up and down/unloading and loading/praising and blaming
+上手 - うわて - upper part/upper stream/left side (of a stage)/skillful (only in comparisons)/dexterity (on
+上回る - うわまわる - to exceed
+お手上げ - おてあげ - all over/given in/given up hope/bring to knees
+向上 - こうじょう - elevation/rise/improvement/advancement/progress
+逆上る - さかのぼる - to go back/to go upstream/to make retroactive
+参上 - さんじょう - calling on/visiting
+仕上がり - しあがり - finish/end/completion
+仕上げ - しあげ - end/finishing touches/being finished
+仕上げる - しあげる - to finish up/to complete
+上位 - じょうい - superior (rank not class)/higher order (e.g. byte)/host computer (of connected device)
+上演 - じょうえん - performance (e.g. music)
+上空 - じょうくう - sky/the skies/high-altitude sky/upper air
+上司 - じょうし - superior authorities/boss
+上昇 - じょうしょう - rising/ascending/climbing
+上陸 - じょうりく - landing/disembarkation
+その上 - そのうえ - in addition/furthermore
+途上 - とじょう - en route/half way
+引き上げる - ひきあげる - to withdraw/to leave/to pull out/to retire
+真上 - まうえ - just above/right overhead
+盛り上がる - もりあがる - to rouse/to swell/to rise
+読み上げる - よみあげる - to read out loud (and clearly)/to call a roll
+</jlpt>
+
 It's going up, unlike 下 (meaning: down) that is going down
 */})],
 
 [['四', 'し', 'よ', 'よん'], mcf2html(function(){/*
 #四
 The most common reading is し, the other reading is よ/よん (most notably 四つ - よつ - 4 things and 四十 - よんじゅう - forty)
+
+<jlpt5>
+四 - し/よん - four
+四日 - よっか - four days/fouth day of the month
+四つ - よっつ - four
+</jlpt>
+<jlpt3>
+四 - し/よん - four
+四 - よん - four
+</jlpt>
+<jlpt2>
+四角 - しかく - square
+四角い - しかくい - square
+四季 - しき - four seasons
+四捨五入 - ししゃごにゅう - rounding up (fractions)
+四つ角 - よつかど - four corners/crossroads
+</jlpt>
+
 囗 (4 sides) + 丿㇄
 */})],
 
@@ -464,6 +2599,51 @@ Other readings:
 かな - used as a prefix meaning metal/money/strength/completely
 こん - a term from Chinese philosophy and medicine, ignore for now
 And かね
+
+<jlpt5>
+お金 - おかね - money
+金曜日 - きんようび - Friday
+</jlpt>
+<jlpt4>
+お・金持ち - かねもち/おかねもち - rich man
+</jlpt>
+<jlpt3>
+金 - かね - gold/gold general (shogi) (abbr)
+金 - きん - gold/gold general (shogi) (abbr)
+金額 - きんがく - amount of money
+金庫 - きんこ - safe/vault/treasury/provider of funds
+金銭 - きんせん - money/cash
+金属 - きんぞく - metal
+金融 - きんゆう - finance/monetary circulation/
+金曜 - きんよう - (abbr) Friday
+現金 - げんきん - cash/ready money/mercenary/
+借金 - しゃっきん - debt/loan/liabilities
+奨学金 - しょうがくきん - scholarship
+税金 - ぜいきん - tax/duty
+代金 - だいきん - price/payment/cost/charge
+貯金 - ちょきん - (bank) savings
+料金 - りょうきん - fee/charge/fare
+</jlpt>
+<jlpt2>
+金魚 - きんぎょ - goldfish
+集金 - しゅうきん - money collection
+賞金 - しょうきん - prize/monetary award
+針金 - はりがね - wire
+</jlpt>
+<jlpt1>
+黄金 - おうごん - gold
+金槌 - かなづち - (iron) hammer/punishment
+金庫 - かねぐら - safe/vault/treasury/provider of funds
+基金 - ききん - fund/foundation
+残金 - ざんきん - remaining money
+資金 - しきん - funds/capital
+送金 - そうきん - remittance/sending money
+大金 - たいきん - great cost
+賃金 - ちんぎん - wages
+募金 - ぼきん - fund-raising/collection of funds
+預金 - よきん - deposit/bank account
+</jlpt>
+
 It... looks like a bank maybe? idk
 */})],
 
@@ -471,9 +2651,19 @@ It... looks like a bank maybe? idk
 #九
 Meaning - nine
 Readings: きゅう/く, ここの
+ここの is used when counting (e.g. 九つ - ここのつ - 9 things)
 ここの might be replaced with この when counting out loud
 く is rarely used, mainly when saying きゅう would be hard
-The only usage of ここの I found is 九つ - ここのつ - 9 things
+
+<jlpt5>
+九 - きゅう / く - nine
+九日 - ここのか - nine days/ninth day
+九つ - ここのつ - nine
+</jlpt>
+<jlpt3>
+九 - きゅう / く - nine
+九 - く - nine
+</jlpt>
 */})],
 
 [['入', 'にゅう', 'い', 'はい', 'いり', 'いれ', 'しお'], mcf2html(function(){/*
@@ -486,9 +2676,58 @@ Rare readings: いり, いれ, しお
 入る - はいる - to enter/go into/break into/join/enroll/contain/hold/accommodate/have (an income of)/get/receive/score
 入り込む - はいりこむ - to go into/come into/penetrate/get in/step in (a house)/become complicated
 手に入る - てにはいる - to obtain/come into possession of/get hold of/get one's hands on
-Other notable words:
-入れる - いれる - to put in/let in/take in/bring in/insert/set (a jewel, etc.)/ink in (e.g. a tattoo)/admit/accept/employ/hire/accept/comply
-入り - いり - entering/setting (of the sun)/containing/content/audience/income/beginning
+
+<jlpt5>
+入口 - いりぐち - entrance
+入れる - いれる - to put in
+入る - はいる - to enter/to contain
+</jlpt>
+<jlpt4>
+押し入れ - おしいれ - closet
+入院 - にゅういん・する - to hospitalise/hospitalisation
+入学 - にゅうがく・する - to enter school or university
+</jlpt>
+<jlpt3>
+気に入る - きにいる - to be pleased with/to suit
+記入 - きにゅう - entry/filling in of forms
+収入 - しゅうにゅう - income/receipts/revenue
+入学 - にゅうがく - entry to school or university/matriculation
+入場 - にゅうじょう - entrance/admission/entering
+輸入 - ゆにゅう・する - importation/import/introduction/to import
+</jlpt>
+<jlpt2>
+入れ物 - いれもの - container/case/receptacle
+四捨五入 - ししゃごにゅう - rounding up (fractions)
+侵入 - しんにゅう - penetration/invasion/raid/aggression/trespass
+出入り - でいり - in and out/coming and going/free association/income and expenditure/debits and credit
+出入口 - でいりぐち - exit and entrance
+手入れ - ていれ - repairs/maintenance
+取り入れる - とりいれる - to harvest/to take in/to adopt
+入社 - にゅうしゃ - entry to a company
+日の入り - ひのいり - sunset
+</jlpt>
+<jlpt1>
+入口 - いりくち - entrance/gate/approach/mouth
+入る - いる - to get in/to go in/to come in/to flow into/to set/to set in
+受け入れ - うけいれ - receiving/acceptance
+受け入れる - うけいれる - to accept/to receive
+恐れ入る - おそれいる - to be filled with awe/to feel small/to be amazed/to be surprised/to be disconcerted/to be sorry/to b
+介入 - かいにゅう - intervention
+加入 - かにゅう - becoming a member/joining/entry/admission/subscription/affiliation/adherence/signing
+購入 - こうにゅう - purchase/buy
+仕入れる - しいれる - to lay in stock/to replenish stock/to procure
+新入生 - しんにゅうせい - freshman/first-year student
+潜入 - せんにゅう - infiltration/sneaking in
+出入り口 - でいりぐち - exit and entrance
+投入 - とうにゅう - throw/investment/making (an electrical circuit)
+導入 - どうにゅう - introduction/bringing in/leading in
+入手 - にゅうしゅ - obtaining/coming to hand
+入賞 - にゅうしょう - winning a prize or place (in a contest)
+入浴 - にゅうよく - bathe/bathing
+納入 - のうにゅう - payment/supply
+申し入れる - もうしいれる - to propose/to suggest
+</jlpt>
+
 Looks like the Half-Life logo, and a crowbar is just perfect for entering... places
 */})],
 
@@ -497,6 +2736,71 @@ Looks like the Half-Life logo, and a crowbar is just perfect for entering... pla
 Meaning - education/study/learn/school/science
 Readings: がく and まな, but the latter is only used in 学ぶ - なまぶ - to study (in depth)/learn/take lessons in
 Used as a suffix meaning "study of...", like 文学 - ぶんがく - literature
+
+<jlpt5>
+学生 - がくせい - student
+学校 - がっこう - school
+大学 - だいがく - university
+留学生 - りゅうがくせい - overseas student
+</jlpt>
+<jlpt4>
+医学 - いがく - medical science
+科学 - かがく - science
+高等学校 - こうとうがっこう - high school
+小学校 - しょうがっこう - elementary school
+数学 - すうがく - mathematics/arithmetic
+大学生 - だいがくせい - university student
+中学校 - ちゅうがっこう - junior high school/middle school
+入学 - にゅうがく・する - to enter school or university
+文学 - ぶんがく - literature
+</jlpt>
+<jlpt3>
+化学 - かがく - chemistry
+学 - がく - learning/scholarship/erudition/knowledge
+学者 - がくしゃ - scholar
+学習 - がくしゅう - study/learning
+学問 - がくもん - scholarship/study/learning
+学期 - がっき - term (school)
+語学 - ごがく - language study
+奨学金 - しょうがくきん - scholarship
+進学 - しんがく - going on to a higher level school/
+中学 - ちゅうがく - middle school/junior high school
+通学 - つうがく - commuting to school
+哲学 - てつがく - philosophy
+入学 - にゅうがく - entry to school or university/matriculation
+学ぶ - まなぶ - to study (in depth)/to learn/to take lessons in
+留学 - りゅうがく - studying abroad
+</jlpt>
+<jlpt2>
+学術 - がくじゅつ - science/learning/scholarship
+学年 - がくねん - year in school/grade in school
+学部 - がくぶ - department of a university/undergraduate
+学力 - がくりょく - scholarship/knowledge/literary ability
+学科 - がっか - study subject/course of study
+学会 - がっかい - scientific society/academic meeting
+学級 - がっきゅう - grade in school
+見学 - けんがく - inspection/study by observation/field trip
+在学 - ざいがく - (enrolled) in school
+自然科学 - しぜんかがく - natural science
+社会科学 - しゃかいかがく - social science
+小学生 - しょうがくせい - grade school student
+人文科学 - じんぶんかがく - social sciences/humanities
+大学院 - だいがくいん - graduate school
+</jlpt>
+<jlpt1>
+学芸 - がくげい - arts and sciences/liberal arts
+学士 - がくし - university graduate
+学説 - がくせつ - theory
+学歴 - がくれき - academic background
+休学 - きゅうがく - temporary absence from school/suspension
+共学 - きょうがく - coeducation
+工学 - こうがく - engineering
+考古学 - こうこがく - archaeology
+修学 - しゅうがく - learning
+退学 - たいがく - dropping out of school
+法学 - ほうがく - law/jurisprudence
+</jlpt>
+
 Looks like 字 - character/letter but with a lot of things on the top instead of just one
 */})],
 
@@ -506,6 +2810,22 @@ Meaning - circle/round/yen
 Readings:
 まる - used in 円い - まるい - round/circular/spherical/harmonious/calm
 えん - used everywhere else
+
+<jlpt5>
+丸い/円い - まるい - round/circular
+</jlpt>
+<jlpt3>
+円 - えん - circle/money
+</jlpt>
+<jlpt2>
+円周 - えんしゅう - circumference
+楕円 - だえん - ellipse
+円い - まるい - round/circular/spherical
+</jlpt>
+<jlpt1>
+円滑 - えんかつ - harmony/smoothness
+円満 - えんまん - perfection/harmony/peace/smoothness/completeness/satisfaction/integrity
+</jlpt>
 */})],
 
 [['子', 'こ', 'し', 'す', 'ね'], mcf2html(function(){/*
@@ -518,6 +2838,48 @@ as a common female name suffix
 as a prefix meaning "derivative" (子犬 - こいぬ - a puppy; 子会社 - こがいしゃ - a subsidiary company)
 as a suffix meaning "an object with said property", e.g. 振子 - pendulum ("a swinging object")
 し is an affix meaning: a child/(honorific)learned man+same as the last 2 properties above\^
+
+<jlpt5>
+お菓子 - おかし - sweets/candy
+男の子 - おとこのこ - boy
+女の子 - おんなのこ - girl
+子供 - こども - child
+帽子 - ぼうし - hat
+</jlpt>
+<jlpt4>
+子 - こ - child
+息子 - むすこ - (humble) son
+</jlpt>
+<jlpt3>
+椅子 - いす - chair
+王子 - おうじ - prince
+菓子 - かし - pastry
+女子 - じょし - woman/girl
+男子 - だんし - a boy/a man/a male
+調子 - ちょうし - condition/form/shape/tune/tone/key
+電子 - でんし - electron
+双子 - ふたご - twins/a twin
+迷子 - まいご - lost (stray) child
+様子 - ようす - aspect/state/appearance
+</jlpt>
+<jlpt2>
+子孫 - しそん - descendants/posterity/offspring
+障子 - しょうじ - paper sliding door
+末っ子 - すえっこ - youngest child
+扇子 - せんす - folding fan
+梯子 - はしご - ladder/stairs
+判子 - はんこ - seal (used for signature)
+</jlpt>
+<jlpt1>
+女子 - おなご - woman/girl
+原子 - げんし - atom
+子息 - しそく - son
+梯子 - ていし - ladder/stairs
+捻子 - ねじ - screw/helix/spiral
+分子 - ぶんし - numerator/molecule
+利子 - りし - interest (bank)
+</jlpt>
+
 It kinda looks like a baby, doesn't it?
 */})],
 
@@ -525,6 +2887,17 @@ It kinda looks like a baby, doesn't it?
 #八
 Meaning: eight
 Readings: はち, や (+rare よう and はつ)
+
+<jlpt5>
+八 - はち - eight
+八百屋 - やおや - greengrocer
+八つ - やっつ - eight
+八日 - ようか - eight days/eighth day of the month
+</jlpt>
+<jlpt1>
+お八 - おやつ - (uk) between meal snack/afternoon refreshment/afternoon tea/mid-day snack
+</jlpt>
+
 Looks like the insides of 四 - four, but bigger (doubled). Alternatively, はち starts with は and ハ is the katakana for は.
 */})]
 
@@ -546,19 +2919,19 @@ var kanjiList = document.getElementById("kanji-list");
 function handleSubmit(e) {
 	e.preventDefault();
 	var s = textToHiragana(userInput.value);
-	console.log(s);
+	//console.log(s);
 	kanjiList.innerHTML = "";
 	var innerHTML = "";
 	var searchResults = "";
 	for(var i = 0; i < kanjis.length; ++i) {
 		for(var j = 0; j < kanjis[i][0].length; ++j) {
 			if(kanjis[i][0][j].indexOf(s) >= 0) {
-				innerHTML = "<tr><td>"+kanjis[i][1]+"</td></tr>"+innerHTML;
+				innerHTML += "<tr><td>"+kanjis[i][1]+"</td></tr>";
 				break;
 			}
 		}
 	}
-	console.log(innerHTML);
+	//console.log(innerHTML);
 	kanjiList.innerHTML = innerHTML;
 	return false;
 }

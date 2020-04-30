@@ -70,7 +70,7 @@ var wordCount = level == 40 ? 51 : 48;
 </head>
 
 <body>
-	<div id="game-desc" class="text-output2"><span>You will be asked 100 questions where you need to <b>remember the word meaning and enter the readings</b> and then given your result in points (0-100). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME, nn=ん, zi=じ, ti=ち, etc</b></span></div>
+<div id="game-desc" class="text-output2"><span>You will be asked 100 questions where you need to <b>remember the word meaning and enter the readings</b>. At the end you will get your result in points (0-100). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME, nn=ん, zi=じ, ti=ち, na=な, etc</b></span></div>
 <progress id="progress" value="0" max="100"></progress>
 <div id="output" class="text-output" style="height: 30;">This is a tool to help learn new vocabulary as well as get used to IME input.</div>
 <form id="user-form"><input type="text" id="user-input" class="text-input" disabled="true"/></form>
@@ -87,7 +87,7 @@ var desc=document.getElementById("game-desc");
 var progress=document.getElementById("progress");
 progress.max = questionCount;
 
-desc.innerHTML = "<span>You will be asked " + questionCount.toString() + " questions where you need to <b>remember the word meaning and enter the readings</b> and then given your result in points (0-" + questionCount.toString() + "). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME, nn=ん, zi=じ, ti=ち, etc</b></span>";
+desc.innerHTML = "<span>You will be asked " + questionCount.toString() + " questions where you need to <b>remember the word meaning and enter the readings</b>. At the end you will get your result in points (0-" + questionCount.toString() + "). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME: nn=ん, zi=じ, ti=ち, na=な, etc</b></span>";
 
 initSqlJs({ locateFile: filename => `/${filename}` }).then(function(SQL) {
 var xhr = new XMLHttpRequest();

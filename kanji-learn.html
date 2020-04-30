@@ -24,6 +24,9 @@ var katakana = {
 	extended: ['ガ','ギ','グ','ゲ','ゴ','ザ','ジ','ズ','ゼ','ゾ','ダ','ヂ','ヅ','デ','ド','バ','ビ','ブ','ベ','ボ','パ','ピ','プ','ペ','ポ'],
 };
 
+let isKanji = ch => (ch >= "\u4e00" && ch <= "\u9faf") || (ch >= "\u3400" && ch <= "\u4dbf");
+let isAscii = ch => (ch >= "\0" && ch <= "\x7F");
+
 var r2hPre = { };
 var r2h = { 'ya': 'や', 'yo': 'よ', 'yu': 'ゆ', 'wa': 'わ', 'wo': 'を', 'nn': 'ん', '-': 'ー', 'ja': 'じゃ', 'jo': 'じょ', 'ju': 'じゅ' };
 var r2hPost = { };
@@ -113,8 +116,48 @@ let splitFurigana = (furi, html) => {
 	if(furiAll.length == 1) furiAll = furiAll[0].split(',　');
 	if(furiAll.length == 1) furiAll = furiAll[0].split(', ');
 	if(furiAll.length == 1) furiAll = furiAll[0].split(',');
-	if(!html) return furiAll.map(x => x.replace(/ /g, '').replace(/　/g, ''));
+	if(!html) {
+		furiAll = furiAll.map(x => x.replace(/　/g, ''));
+		return furiAll.map(x => x.replace(/ /g, ''));
+	}
+	
 	let ret = furiAll.map(x => x.split(' ').map(x => x.split('[').join('<rt>').split(']').join('</rt>')).map(x => (x.indexOf('rt>') >= 0) ? ('<ruby>' + x + '</ruby>') : x).join(''));
+	return ret;
+};
+
+let furigana2HtmlNoSplit = furi => {
+	let src = furi.replace('&nbsp;', ' ');
+	let wasKanji = undefined;
+	let kanji = undefined;
+	let wasAlpha = undefined;
+	let alpha = undefined;
+	let ret = '';
+	let s = '';
+	let kanjiStart = -1;
+	let cont = () => {
+		if(!s) return;
+		if(wasKanji) kanjiStart = ret.length;
+		else if(s.startsWith('[') && s.indexOf(']') >= 0) {
+			let s2 = s.substr(s.indexOf(']') + 1);
+			s = '<rt>' + s.substr(1, s.indexOf(']') - 1) + '</rt>';
+			ret = ret.substr(0, kanjiStart) + '<ruby>' + ret.substr(kanjiStart) + s + '</ruby>' + s2;
+			s = '';
+			return;
+		}
+		ret += s;
+		s = '';
+	}
+	for(let i = 0; i < furi.length; ++i) {
+		kanji = isKanji(furi[i]);
+		alpha = isAscii(furi[i]);
+		if(wasAlpha && !alpha && furi[i-1] != ' ' && furi[i-1] != '[' && furi[i-1] != ']') s += ' / ';
+		if(kanji != wasKanji) cont();
+		s += furi[i];
+		wasKanji = kanji;
+		wasAlpha = alpha;
+	}
+	kanji = undefined;
+	cont();
 	return ret;
 };
 
@@ -124,7 +167,7 @@ let furiganaToHiragana = furi => {
 	let furiAll = splitFurigana(src);
 	let moreThanOne = 0;
 	for(let r = 0; r < furiAll.length; ++r) {
-		furiAll[r] = [...furiAll[r]].filter(x => hiragana.standard.indexOf(x) >= 0 || hiragana.extended.indexOf(x) >= 0 || hiragana.little.indexOf(x) >= 0).join('');
+		furiAll[r] = [...furiAll[r]].filter(x => !isKanji(x) && !isAscii(x)).join('');
 		/*furi = furiAll[r].split(' ');
 		for(let j in furi) {
 			moreThanOne = 0;
@@ -163,9 +206,9 @@ var contents =
 	))
 	.map(x => ({
 		word: x[0],
-		furigana: splitFurigana(x[1], true),
-		answer: [...new Set([...furiganaToHiragana(x[1])])],
-		translation: x[2].split(/,(?![^(]*\))\s+/),
+		furigana: splitFurigana(x[1], true).filter(x => !!x),
+		answer: [...new Set([...furiganaToHiragana(x[1])])].filter(x => !!x),
+		translation: furigana2HtmlNoSplit(x[2]).split(/,(?![^(]*\))\s+/).filter(x => !!x),
 		index: _i++,
 	}));
 var contentsByWord = {};
@@ -176,19 +219,19 @@ for(let j in contents) {
 				...contentsByWord[contents[j].word].answer,
 				...contents[j].answer
 			])
-		];
+		].filter(x => !!x);
 		contentsByWord[contents[j].word].translation = [
 			...new Set([
 				...contentsByWord[contents[j].word].translation,
 				...contents[j].translation
 			])
-		];
+		].filter(x => !!x);
 		contentsByWord[contents[j].word].furigana = [
 			...new Set([
 				...contentsByWord[contents[j].word].furigana,
 				...contents[j].furigana
 			])
-		];
+		].filter(x => !!x);
 	} else contentsByWord[contents[j].word] = contents[j];
 }
 contents = [];
@@ -242,8 +285,8 @@ if(showAnswers) {
 			+= "<span>"
 			+ item.furigana.join('、')
 			+ " - "
-			+ item.translation.join(', ')
-			+ ".</span>";
+			+ item.translation.join(', ') + (item.translation[item.translation.length - 1].endsWith(".") ? "" : ".")
+			+ "</span>" + '<hr style="width:50%;text-align:center;margin-top:10px;margin-bottom:10px;border-width:0px;">';
 	});
 	return;
 }
@@ -374,8 +417,8 @@ function handleSubmit(e) {
 					+ " - "
 					+ item[1]
 					+ "x error. The meaning is "
-					+ contents[item[0]].translation.join(', ')
-					+ ".</span>";
+					+ contents[item[0]].translation.join(', ') + (contents[item[0]].translation[contents[item[0]].translation.length - 1].endsWith(".") ? "" : ".")
+					+ "</span>" + '<hr style="width:50%;text-align:center;margin-top:10px;margin-bottom:10px;border-width:0px;">';
 			});
 		} else {
 			output2.innerHTML = 'Congratulations! You made no errors. ' + ((endIdx == contents.length) ? 'You have completed the final level!' : ('You may now <a href="kanji-learn.html?level=' + (level + 1) + '">proceed to the next level.</a>'));

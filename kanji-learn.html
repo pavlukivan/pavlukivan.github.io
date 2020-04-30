@@ -358,7 +358,7 @@ function handleSubmit(e) {
 					+ ".</span>";
 			});
 		} else {
-			output2.innerHTML = 'Congratulations! You made no errors. You can now <a href="kanji-learn.html?level=' + (level + 1) + '">go to the next level.</a>';
+			output2.innerHTML = 'Congratulations! You made no errors. ' + (endIdx == contents.length) ? 'You have completed the final level!' : ('You may now <a href="kanji-learn.html?level=' + (level + 1) + '">proceed to the next level.</a>');
 		}
 	} else if(!willStandby) {
 		rotateQuestion();

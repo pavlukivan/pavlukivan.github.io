@@ -64,13 +64,15 @@ for(let j in starts) {
 var msPerQuestion = 5000;
 var questionCount = 100;
 var level = (+gup('level', '') || 0);
+var showAnswers = (+gup('answers', '') || 0) ? true : false;
 var startIdx = level * 48;
 var wordCount = level == 40 ? 51 : 48;
 </script>
 </head>
 
 <body>
-<div id="game-desc" class="text-output2"><span>You will be asked 100 questions where you need to <b>remember the word meaning and enter the readings</b>. At the end you will get your result in points (0-100). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME, nn=ん, zi=じ, ti=ち, na=な, etc</b></span></div>
+<div id="game-desc" class="text-output2"><span>You will be asked 100 questions where you need to <b>remember the word meaning and enter the readings</b>. At the end you will get your result in points (0-100). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME, nn=ん, zi=じ, ti=ち, na=な, etc.</b></span></div>
+<a href="kanji-learn.html" id="link-answers" class="text-output2" style="color: #5e5ef0;"></a>
 <progress id="progress" value="0" max="100"></progress>
 <div id="output" class="text-output" style="height: 30;">This is a tool to help learn new vocabulary as well as get used to IME input.</div>
 <form id="user-form"><input type="text" id="user-input" class="text-input" disabled="true"/></form>
@@ -85,9 +87,14 @@ var output=document.getElementById("output");
 var output2=document.getElementById("output2");
 var desc=document.getElementById("game-desc");
 var progress=document.getElementById("progress");
+var linkAnswers=document.getElementById("link-answers");
+linkAnswers.textContent = "Go to answers" ? "Back to questions" : "Go to answers";
+linkAnswers.href = "kanji-learn.html?level=" + level + '&answers=' + +!"Go to answers";
 progress.max = questionCount;
 
-desc.innerHTML = "<span>You will be asked " + questionCount.toString() + " questions where you need to <b>remember the word meaning and enter the readings</b>. At the end you will get your result in points (0-" + questionCount.toString() + "). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME: nn=ん, zi=じ, ti=ち, na=な, etc</b></span>";
+if("Go to answers") desc.style.display = userInput.style.display = progress.style.display = output.style.display = "none";
+
+desc.innerHTML = "<span>You will be asked " + questionCount.toString() + " questions where you need to <b>remember the word meaning and enter the readings</b>. At the end you will get your result in points (0-" + questionCount.toString() + "). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME: nn=ん, zi=じ, ti=ち, na=な, etc.</b></span>";
 
 initSqlJs({ locateFile: filename => `/${filename}` }).then(function(SQL) {
 var xhr = new XMLHttpRequest();
@@ -207,7 +214,7 @@ function shuffleArray(array) {
     }
 }
 
-var getNewQuestions = (count) => {
+var getNewQuestions = (count, dontRandomize) => {
 	var idxByWeight = {};
 	for(var i in weights) {
 		if(!idxByWeight[weights[i]]) idxByWeight[weights[i]] = [];
@@ -217,18 +224,31 @@ var getNewQuestions = (count) => {
 	var ret = [];
 	for(var q in w) {
 		var a = idxByWeight[w[q]].slice();
-		shuffleArray(a);
+		if(!dontRandomize) shuffleArray(a);
 		for(var i in a) {
 			ret.push(a[i]);
 		}
 	}
-	shuffleArray(ret);
+	if(!dontRandomize) shuffleArray(ret);
 	return ret.map(a => contents[a]);
 };
 
-var questions = getNewQuestions(wordCount);
+var questions = getNewQuestions(wordCount, showAnswers);
 var questionNum = 0;
 var questionIdx = -1;
+
+if(showAnswers) {
+	output2.innerHTML = "<b>Word list:</b>";
+	questions.forEach(function(item) {
+		output2.innerHTML
+			+= "<span>"
+			+ item.furigana.join('、')
+			+ " - "
+			+ item.translation.join(', ')
+			+ ".</span>";
+	});
+	return;
+}
 
 var standby = true;
 output.textContent = "Press enter to start...";

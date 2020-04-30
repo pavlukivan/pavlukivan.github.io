@@ -197,8 +197,6 @@ for(let k in contentsByWord)
 contents.sort((a, b) => a.index - b.index);
 for(let k in contents) contents[k].index = k;
 
-userInput.focus();
-
 output.textContent = "loaded";
 
 var endIdx = Math.min(Math.floor(startIdx + wordCount), contents.length);
@@ -253,6 +251,7 @@ if(showAnswers) {
 var standby = true;
 output.textContent = "Press enter to start...";
 userInput.disabled = false;
+userInput.focus();
 var score = 0;
 
 let answers = [];

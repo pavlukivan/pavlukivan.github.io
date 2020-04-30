@@ -173,7 +173,9 @@ let furiganaToHiragana = furi => {
 	let furiAll = splitFurigana(src);
 	let moreThanOne = 0;
 	for(let r = 0; r < furiAll.length; ++r) {
-		furiAll[r] = [...furiAll[r]].filter(x => !isKanji(x) && !isAscii(x)).join('');
+		let w = [...furiAll[r]];
+		let n = w.indexOf('[');
+		furiAll[r] = w.filter((x, i) => !isKanji(x) && !isAscii(x) && i > n).join('');
 		/*furi = furiAll[r].split(' ');
 		for(let j in furi) {
 			moreThanOne = 0;

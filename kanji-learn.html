@@ -88,11 +88,11 @@ var output2=document.getElementById("output2");
 var desc=document.getElementById("game-desc");
 var progress=document.getElementById("progress");
 var linkAnswers=document.getElementById("link-answers");
-linkAnswers.textContent = "Go to answers" ? "Back to questions" : "Go to answers";
-linkAnswers.href = "kanji-learn.html?level=" + level + '&answers=' + +!"Go to answers";
+linkAnswers.textContent = showAnswers ? "Back to questions" : "Go to answers";
+linkAnswers.href = "kanji-learn.html?level=" + level + '&answers=' + +!showAnswers;
 progress.max = questionCount;
 
-if("Go to answers") desc.style.display = userInput.style.display = progress.style.display = output.style.display = "none";
+if(showAnswers) desc.style.display = userInput.style.display = progress.style.display = output.style.display = "none";
 
 desc.innerHTML = "<span>You will be asked " + questionCount.toString() + " questions where you need to <b>remember the word meaning and enter the readings</b>. At the end you will get your result in points (0-" + questionCount.toString() + "). You have 5s per question, otherwise you get less points. However if you answer wrong, you get points subtracted. <b>If you don't know the meaning of the word</b> or don't remember the readings, <b>just press enter</b>. <b>You need to type like on an IME: nn=ん, zi=じ, ti=ち, na=な, etc.</b></span>";
 

@@ -157,8 +157,8 @@ var contents =
 	.map(x => ({
 		word: x[0],
 		furigana: splitFurigana(x[1], true),
-		answer: furiganaToHiragana(x[1]),
-		translation: x[2].split(/,(?![^(]*\))/),
+		answer: [...new Set([...furiganaToHiragana(x[1])])],
+		translation: x[2].split(/,(?![^(]*\))\s+/),
 		index: _i++,
 	}));
 var contentsByWord = {};
@@ -359,7 +359,6 @@ function handleSubmit(e) {
 					+ ".</span>";
 			});
 		} else {
-			console.log(endIdx, contents.length);
 			output2.innerHTML = 'Congratulations! You made no errors. ' + ((endIdx == contents.length) ? 'You have completed the final level!' : ('You may now <a href="kanji-learn.html?level=' + (level + 1) + '">proceed to the next level.</a>'));
 		}
 	} else if(!willStandby) {

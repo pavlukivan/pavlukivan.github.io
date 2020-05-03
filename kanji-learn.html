@@ -175,7 +175,7 @@ let furiganaToHiragana = furi => {
 	for(let r = 0; r < furiAll.length; ++r) {
 		let w = [...furiAll[r]];
 		let n = w.indexOf('[');
-		furiAll[r] = w.filter((x, i) => !isKanji(x) && !isAscii(x) && x != '々' && i > n).join('');
+		furiAll[r] = w.filter((x, i) => !isKanji(x) && !isAscii(x) && x != '々').join('');
 		/*furi = furiAll[r].split(' ');
 		for(let j in furi) {
 			moreThanOne = 0;

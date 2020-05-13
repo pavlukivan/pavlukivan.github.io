@@ -300,7 +300,9 @@ var getNewQuestions = (count, dontRandomize) => {
 		if(!dontRandomize) shuffleArray(a);
 		for(var i in a) {
 			ret.push(a[i]);
+			if(ret.length >= count) break;
 		}
+		if(ret.length >= count) break;
 	}
 	if(!dontRandomize) shuffleArray(ret);
 	return ret.map(a => contents[a]);
